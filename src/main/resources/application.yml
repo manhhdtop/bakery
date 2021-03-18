@@ -1,0 +1,34 @@
+# ===============================
+# Config
+# ===============================
+file:
+  upload-dir: /uploads
+  path_uploaded: E:/workspace/toprate
+admin-base-path: /admin
+jwt.audience: audience
+# ===============================
+# Server
+# ===============================
+server:
+  port: 8081
+  error:
+    include-stacktrace: never
+# ===============================
+# DATABASE
+# ===============================
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bakery?characterEncoding=utf-8&serverTimezone=UTC
+    username: root
+    password: root
+    platform: mysql
+    tomcat:
+      jmx-enabled: true
+  jpa:
+    show-sql: false
+    hibernate.ddl-auto: update
+    properties.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+# ===============================
+#
+# ===============================
