@@ -1,11 +1,33 @@
 package com.bakery.server.controller.admin;
 
-import com.bakery.server.controller.admin.base.BaseController;
-import org.apache.catalina.User;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.bakery.server.model.request.UserCreateDto;
+import com.bakery.server.model.request.UserUpdateDto;
+import com.bakery.server.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RequestMapping("${admin-base-path}/user")
 @RestController
-public class UserController extends BaseController<User> {
+public class UserController {
+    @Autowired
+    private UserService userService;
+
+    @PutMapping
+    public ResponseEntity<?> save(@Valid @RequestBody UserCreateDto userCreateDto) {
+        return ResponseEntity.ok(userService.save(userCreateDto));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> update(@Valid @RequestBody UserUpdateDto userUpdateDto) {
+        return ResponseEntity.ok(userService.update(userUpdateDto));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> delete(Long id) {
+        userService.delete(id);
+        return ResponseEntity.ok().build();
+    }
 }

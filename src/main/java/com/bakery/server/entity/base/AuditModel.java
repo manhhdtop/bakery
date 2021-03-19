@@ -17,21 +17,21 @@ import javax.persistence.MappedSuperclass;
 @EqualsAndHashCode(callSuper = true)
 @MappedSuperclass
 public class AuditModel extends BaseModel {
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_date", nullable = false, updatable = false)
     @CreatedDate
-    private Long createdAt;
+    private Long createdDate;
 
     @Column(name = "created_by")
     @CreatedBy
-    private String createdBy;
+    private Long createdBy;
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_date")
     @LastModifiedDate
-    private Long updatedAt;
+    private Long updatedDate;
 
     @Column(name = "updated_by")
     @LastModifiedBy
-    private String updatedBy;
+    private Long updatedBy;
 
 
 }

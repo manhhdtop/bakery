@@ -2,8 +2,10 @@ package com.bakery.server.entity;
 
 import com.bakery.server.constant.UserStatus;
 import com.bakery.server.entity.base.AuditModel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
@@ -12,9 +14,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
 
+@AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@NoArgsConstructor
 @Table(name = "user")
 @Where(clause = "deleted is null or deleted = 0")
 public class UserEntity extends AuditModel {
@@ -29,7 +33,7 @@ public class UserEntity extends AuditModel {
     @Column(name = "email")
     private String email;
     @Column(name = "status", columnDefinition = "int(1) default 1")
-    private UserStatus userStatus;
+    private UserStatus status;
     @OneToMany
     private List<RoleEntity> roles;
 }

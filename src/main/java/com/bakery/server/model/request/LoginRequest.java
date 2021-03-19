@@ -6,8 +6,8 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class LoginRequest {
-    @NotBlank(message = "{login.username.canNotBlank}")
+    @NotBlank(message = "login.username.canNotBlank")
     private String username;
-    @NotBlank(message = "${login.password.canNotBlank}")
+    @NotBlank(message = "login.password.canNotBlank")
     private String password;
 }

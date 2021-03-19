@@ -16,10 +16,8 @@ public class AuditorAwareImpl implements AuditorAware<Long> {
     public Optional<Long> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null ||
-                !authentication.isAuthenticated() ||
-                authentication instanceof AnonymousAuthenticationToken) {
-            return Optional.empty();
+        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+            return Optional.of(auditorContext.getCurrentUserId());
         }
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();

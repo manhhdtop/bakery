@@ -12,4 +12,13 @@ public class BadRequestException extends RuntimeException {
     public BadRequestException(String message) {
         super(MessageUtils.getMessage(message));
     }
+
+    public static BadRequestException build(String message) {
+        return new BadRequestException(MessageUtils.getMessage(message));
+    }
+
+    @Override
+    public synchronized Throwable fillInStackTrace() {
+        return this;
+    }
 }
