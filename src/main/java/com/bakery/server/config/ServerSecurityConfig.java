@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
@@ -20,15 +21,18 @@ public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
     private CustomAuthenticationProvider authProvider;
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+    @Autowired
+    private JwtTokenFilter jwtTokenFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-//                .antMatchers("/admin/**").authenticated()
-                .antMatchers("/**").permitAll();
+                .antMatchers("/admin/**").authenticated()
+                .anyRequest().permitAll();
 
         http.addFilterBefore(authenticationFilter(), BasicAuthenticationFilter.class);
+        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

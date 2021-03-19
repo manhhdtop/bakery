@@ -1,10 +1,12 @@
 package com.bakery.server.config;
 
 import com.bakery.server.constant.UserStatus;
+import com.bakery.server.entity.RoleEntity;
 import com.bakery.server.entity.UserEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,18 +18,14 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Data
+@NoArgsConstructor
 public class UserPrincipal implements UserDetails {
     private Long id;
-
     private String name;
-
     private String username;
-
-    private UserStatus userStatus;
-
-    @JsonIgnore
+    private UserStatus status;
+    private List<RoleEntity> roles;
     private String email;
-
     @JsonIgnore
     private String password;
 
@@ -50,16 +48,16 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

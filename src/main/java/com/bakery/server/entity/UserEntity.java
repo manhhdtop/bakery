@@ -8,10 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @AllArgsConstructor
@@ -34,6 +31,6 @@ public class UserEntity extends AuditModel {
     private String email;
     @Column(name = "status", columnDefinition = "int(1) default 1")
     private UserStatus status;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<RoleEntity> roles;
 }

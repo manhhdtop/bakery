@@ -5,7 +5,19 @@ file:
   upload-dir: /uploads
   path_uploaded: E:/workspace/toprate
 admin-base-path: /admin
-jwt.audience: audience
+admin:
+  user:
+    username: admin
+    password: $2a$10$ESiHPIp66GDRAmmVbrb3heW35sa9a88ykZd0vcEy5AoHUtRwW2sPu
+    name: Administrator
+    email: admin@bakery.com
+  role:
+    code: ADMINISTRATOR
+    name: ADMINISTRATOR
+jwt:
+  secret: MdjXPJbHCSQUhDhVENhHmBbZh
+  issuer: bakery.com
+  expired: 604800000 # = 7 * 24 * 60 * 60 * 1000 * 1 Week *
 # ===============================
 # Server
 # ===============================

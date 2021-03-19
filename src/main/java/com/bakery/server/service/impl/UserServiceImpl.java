@@ -12,6 +12,7 @@ import com.bakery.server.service.UserService;
 import com.bakery.server.utils.AssertUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,9 @@ public class UserServiceImpl implements UserService {
     private RoleRepository roleRepository;
     @Autowired
     private UserRepository userRepository;
+
+    @Value("${admin.user.username}")
+    private String usernameAdministrator;
 
     public UserResponse save(UserCreateDto userCreateDto) {
         validateCreateUser(userCreateDto);
@@ -49,6 +53,7 @@ public class UserServiceImpl implements UserService {
 
         UserEntity userOld = userRepository.findById(userUpdateDto.getId()).orElse(null);
         AssertUtil.notNull(userOld, "user.update.userId.notExist");
+        AssertUtil.isFalse(userOld.getUsername().equals(usernameAdministrator), "user.update.userId.notExist");
         UserEntity userEntity = modelMapper.map(userUpdateDto, UserEntity.class);
         List<RoleEntity> roles = roleRepository.findAllById(userUpdateDto.getRoles());
         AssertUtil.notEmpty(roles, "role.notExist");
@@ -64,7 +69,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateCreateUser(UserCreateDto userCreateDto) {
-        userCreateDto.setUsername(userCreateDto.getUsername().toLowerCase().trim());
+        String username = userCreateDto.getUsername().toLowerCase().trim();
+        userCreateDto.setUsername(username);
         userCreateDto.setName(userCreateDto.getName().trim());
         userCreateDto.setEmail(userCreateDto.getEmail().trim());
         userCreateDto.setPassword(userCreateDto.getPassword().trim());
