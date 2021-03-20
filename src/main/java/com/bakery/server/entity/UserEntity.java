@@ -31,6 +31,6 @@ public class UserEntity extends AuditModel {
     private String email;
     @Column(name = "status", columnDefinition = "int(1) default 1")
     private UserStatus status;
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<RoleEntity> roles;
 }

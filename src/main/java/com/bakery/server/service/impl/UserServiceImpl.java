@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -40,9 +41,11 @@ public class UserServiceImpl implements UserService {
 
         userCreateDto.encodePassword(passwordEncoder);
         UserEntity userEntity = modelMapper.map(userCreateDto, UserEntity.class);
-        List<RoleEntity> roles = roleRepository.findAllById(userCreateDto.getRoles());
-        AssertUtil.notEmpty(roles, "role.notExist");
-        userEntity.setRoles(roles);
+        if (!CollectionUtils.isEmpty(userCreateDto.getRoles())) {
+            List<RoleEntity> roles = roleRepository.findAllById(userCreateDto.getRoles());
+            AssertUtil.notEmpty(roles, "role.notExist");
+            userEntity.setRoles(roles);
+        }
 
         UserEntity user = userRepository.save(userEntity);
         return modelMapper.map(user, UserResponse.class);
