@@ -17,7 +17,6 @@ import java.util.List;
 
 @Configuration
 @EnableSwagger2
-@Profile("!release")
 public class SpringFoxConfig {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String DEFAULT_INCLUDE_PATTERN = "/.*";
