@@ -11,12 +11,14 @@ import com.bakery.server.repository.UserRepository;
 import com.bakery.server.service.UserService;
 import com.bakery.server.utils.AssertUtil;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 @Service
@@ -32,6 +34,14 @@ public class UserServiceImpl implements UserService {
 
     @Value("${admin.user.username}")
     private String usernameAdministrator;
+
+    @Override
+    public List<UserResponse> findAll() {
+        List<UserEntity> userEntities = userRepository.findAll();
+        Type type = new TypeToken<List<UserResponse>>() {
+        }.getType();
+        return modelMapper.map(userEntities, type);
+    }
 
     public UserResponse save(UserCreateDto userCreateDto) {
         validateCreateUser(userCreateDto);

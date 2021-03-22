@@ -8,17 +8,18 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.*;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @NoArgsConstructor
-@Table(name = "role")
+@Table(name = "action")
 @Where(clause = "deleted is null or deleted = 0")
-public class RoleEntity extends AuditModel {
+public class ActionEntity extends AuditModel {
     private static final long serialVersionUID = 1L;
 
     @Column(name = "code", nullable = false, unique = true)
@@ -29,6 +30,11 @@ public class RoleEntity extends AuditModel {
     private String description;
     @Column(name = "status", columnDefinition = "int(1) default 1")
     private Status status;
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<ActionEntity> actions;
+
+    public ActionEntity(String code, String name, Status status) {
+        this.code = code;
+        this.name = name;
+        this.description = name;
+        this.status = status;
+    }
 }

@@ -1,5 +1,6 @@
 package com.bakery.server.service.impl;
 
+import com.bakery.server.constant.Status;
 import com.bakery.server.entity.RoleEntity;
 import com.bakery.server.model.request.RoleCreateDto;
 import com.bakery.server.model.request.RoleUpdateDto;
@@ -10,6 +11,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RoleServiceImpl implements RoleService {
     @Autowired
@@ -18,9 +21,14 @@ public class RoleServiceImpl implements RoleService {
     private RoleRepository roleRepository;
 
     @Override
+    public List<RoleEntity> findAll() {
+        return roleRepository.findAll();
+    }
+
+    @Override
     public RoleEntity save(RoleCreateDto roleCreateDto) {
-        RoleEntity userOld = roleRepository.findByCode(roleCreateDto.getCode());
-        AssertUtil.isNull(userOld, "role.create.code.exist");
+        RoleEntity roleOld = roleRepository.findByCode(roleCreateDto.getCode());
+        AssertUtil.isNull(roleOld, "role.create.code.exist");
 
         RoleEntity roleEntity = modelMapper.map(roleCreateDto, RoleEntity.class);
 
@@ -40,5 +48,10 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void delete(Long id) {
 
+    }
+
+    @Override
+    public List<RoleEntity> findAllStatusNotHidden() {
+        return roleRepository.findByStatusIsNot(Status.HIDDEN);
     }
 }

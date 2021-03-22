@@ -5,6 +5,7 @@ import com.bakery.server.model.request.UserUpdateDto;
 import com.bakery.server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -15,6 +16,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping
+    public ResponseEntity<?> findAll() {
+        return ResponseEntity.ok(userService.findAll());
+    }
+
+    @PreAuthorize("hasPermission('USER', 'ADD')")
     @PutMapping
     public ResponseEntity<?> save(@Valid @RequestBody UserCreateDto userCreateDto) {
         return ResponseEntity.ok(userService.save(userCreateDto));

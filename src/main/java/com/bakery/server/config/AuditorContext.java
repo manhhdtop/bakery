@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 @Setter
 public class AuditorContext {
     private static final String defaultAudit = "SYSTEM";
+    private static final Long defaultAuditId = 0L;
     private String name;
     private Long userId;
     private String username;
@@ -20,6 +21,12 @@ public class AuditorContext {
     }
 
     public Long getCurrentUserId() {
-        return userId == null ? 0L : userId;
+        return userId == null ? defaultAuditId : userId;
+    }
+
+    public void setUser(UserPrincipal userDetails) {
+        userId = userDetails.getId();
+        username = userDetails.getUsername();
+        name = userDetails.getName();
     }
 }

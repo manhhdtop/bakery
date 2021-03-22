@@ -17,8 +17,8 @@ public class BadRequestException extends RuntimeException {
         return new BadRequestException(MessageUtils.getMessage(message));
     }
 
-    @Override
-    public synchronized Throwable fillInStackTrace() {
-        return this;
-    }
+//    @Override
+//    public synchronized Throwable fillInStackTrace() {
+//        return this;
+//    }
 }

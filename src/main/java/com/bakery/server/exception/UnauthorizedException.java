@@ -5,11 +5,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
-public class UnAuthorizedException extends RuntimeException {
+public class UnauthorizedException extends RuntimeException {
 
-    private static final long serialVersionUID = 1616402540777823135L;
+    private static final long serialVersionUID = 1616402540177823135L;
 
-    public UnAuthorizedException() {
+    public UnauthorizedException() {
         super(MessageUtils.getMessage("message.unauthorized"));
     }
+
+//    @Override
+//    public synchronized Throwable fillInStackTrace() {
+//        return this;
+//    }
 }
