@@ -15,14 +15,14 @@ admin:
     code: ADMINISTRATOR
     name: ADMINISTRATOR
 jwt:
-  secret: MdjXPJbHCSQUhDhVENhHmBbZh
+  secret: 0J9UUt7b3ipgbS2d8TujIiQ1a0AcG0Xh4GvqkdHydMUcd34
   issuer: bakery.com
   expired: 604800000 # = 7 * 24 * 60 * 60 * 1000 * 1 Week *
 # ===============================
 # Server
 # ===============================
 server:
-  port: 8081
+  port: 8080
   error:
     include-stacktrace: never
 # ===============================
@@ -41,6 +41,8 @@ spring:
     show-sql: false
     hibernate.ddl-auto: update
     properties.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
-# ===============================
-#
-# ===============================
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          secret: MdjXPJbHCSQUhDhVENhHmBbZh

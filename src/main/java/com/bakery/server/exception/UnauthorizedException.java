@@ -13,6 +13,10 @@ public class UnauthorizedException extends RuntimeException {
         super(MessageUtils.getMessage("message.unauthorized"));
     }
 
+    public static UnauthorizedException build() {
+        return new UnauthorizedException();
+    }
+
 //    @Override
 //    public synchronized Throwable fillInStackTrace() {
 //        return this;
