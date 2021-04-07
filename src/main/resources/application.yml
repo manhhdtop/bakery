@@ -8,12 +8,8 @@ admin-base-path: /admin
 admin:
   user:
     username: admin
-    password: $2a$10$ESiHPIp66GDRAmmVbrb3heW35sa9a88ykZd0vcEy5AoHUtRwW2sPu
-    name: Administrator
-    email: admin@bakery.com
   role:
     code: ADMINISTRATOR
-    name: Administrator
 jwt:
   secret: 0J9UUt7b3ipgbS2d8TujIiQ1a0AcG0Xh4GvqkdHydMUcd34
   issuer: bakery.com
