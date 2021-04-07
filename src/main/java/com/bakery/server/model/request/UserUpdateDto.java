@@ -10,6 +10,6 @@ public class UserUpdateDto {
     private Long id;
     private String name;
     private String email;
-    private UserStatus status;
+    private Integer status;
     private List<Long> roles;
 }

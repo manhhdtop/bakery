@@ -20,6 +20,7 @@ jwt:
 server:
   port: 8080
   error:
+    include-message: always
     include-stacktrace: never
 # ===============================
 # DATABASE
@@ -42,7 +43,6 @@ spring:
       resourceserver:
         jwt:
           secret: MdjXPJbHCSQUhDhVENhHmBbZh
-  jackson:
-    serialization:
-      fail-on-self-references: false
-
+#
+#
+#

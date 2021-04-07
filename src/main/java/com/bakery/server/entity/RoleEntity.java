@@ -27,8 +27,8 @@ public class RoleEntity extends AuditModel {
     private String name;
     @Column(name = "description")
     private String description;
-    @Column(name = "status", columnDefinition = "int(1) default 1")
-    private Status status;
+    @Column(name = "status", columnDefinition = "int default 1")
+    private Integer status;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "role_action", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "action_id"))
     private List<ActionEntity> actions;

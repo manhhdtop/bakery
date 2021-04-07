@@ -17,7 +17,7 @@ public class UserCreateDto {
     @NotBlank
     private String password;
     private String email;
-    private UserStatus status;
+    private Integer status;
     @NotEmpty
     private List<Long> roles;
 

@@ -13,5 +13,5 @@ public class AddCategoryRequest {
     private String description;
     private Long parentId;
     @NotNull
-    private Status status;
+    private Integer status;
 }

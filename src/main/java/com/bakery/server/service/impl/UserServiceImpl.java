@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
         userCreateDto.setEmail(userCreateDto.getEmail().trim());
         userCreateDto.setPassword(userCreateDto.getPassword().trim());
         if (userCreateDto.getStatus() == null) {
-            userCreateDto.setStatus(UserStatus.ACTIVE);
+            userCreateDto.setStatus(UserStatus.DEACTIVE.getStatus());
         }
     }
 
@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
         userUpdateDto.setName(userUpdateDto.getName().trim());
         userUpdateDto.setEmail(userUpdateDto.getEmail().trim());
         if (userUpdateDto.getStatus() == null) {
-            userUpdateDto.setStatus(UserStatus.ACTIVE);
+            userUpdateDto.setStatus(UserStatus.DEACTIVE.getStatus());
         }
     }
 }

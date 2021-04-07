@@ -29,8 +29,8 @@ public class UserEntity extends AuditModel {
     private String password;
     @Column(name = "email")
     private String email;
-    @Column(name = "status", columnDefinition = "int(1) default 1")
-    private UserStatus status;
+    @Column(name = "status", columnDefinition = "int default 1")
+    private Integer status;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<RoleEntity> roles;

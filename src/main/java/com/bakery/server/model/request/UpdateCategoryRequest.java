@@ -14,6 +14,6 @@ public class UpdateCategoryRequest {
     private String name;
     private String description;
     @NotNull
-    private Status status;
+    private Integer status;
     private Long parentId;
 }

@@ -28,13 +28,6 @@ public class ActionEntity extends AuditModel {
     private String name;
     @Column(name = "description")
     private String description;
-    @Column(name = "status", columnDefinition = "int(1) default 1")
-    private Status status;
-
-    public ActionEntity(String code, String name, Status status) {
-        this.code = code;
-        this.name = name;
-        this.description = name;
-        this.status = status;
-    }
+    @Column(name = "status", columnDefinition = "int default 1")
+    private Integer status;
 }
