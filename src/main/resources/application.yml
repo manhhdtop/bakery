@@ -13,7 +13,7 @@ admin:
     email: admin@bakery.com
   role:
     code: ADMINISTRATOR
-    name: ADMINISTRATOR
+    name: Administrator
 jwt:
   secret: 0J9UUt7b3ipgbS2d8TujIiQ1a0AcG0Xh4GvqkdHydMUcd34
   issuer: bakery.com
@@ -46,3 +46,7 @@ spring:
       resourceserver:
         jwt:
           secret: MdjXPJbHCSQUhDhVENhHmBbZh
+  jackson:
+    serialization:
+      fail-on-self-references: false
+

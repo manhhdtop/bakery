@@ -1,12 +1,14 @@
 package com.bakery.server.constant;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.util.Arrays;
 
 public enum Status {
     DEACTIVE(0, "Chưa kích hoạt"),
     ACTIVE(1, "Hoạt động"),
     LOCK(-1, "Khóa"),
-    HIDDEN(-99, "Ẩn");
+    ADMINISTRATOR(-99, "Khoá bởi Admin");
 
     private int status;
     private String name;
@@ -25,6 +27,7 @@ public enum Status {
         return userStatus == null ? null : userStatus.name;
     }
 
+    @JsonValue
     public int getStatus() {
         return status;
     }

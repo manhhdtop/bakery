@@ -8,28 +8,27 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.*;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @NoArgsConstructor
-@Table(name = "role")
+@Table(name = "category")
 @Where(clause = "deleted is null or deleted = 0")
-public class RoleEntity extends AuditModel {
+public class CategoryEntity extends AuditModel {
     private static final long serialVersionUID = 1L;
 
-    @Column(name = "code", nullable = false, unique = true)
-    private String code;
     @Column(name = "name")
     private String name;
     @Column(name = "description")
     private String description;
     @Column(name = "status", columnDefinition = "int(1) default 1")
     private Status status;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "role_action", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "action_id"))
-    private List<ActionEntity> actions;
+    @ManyToOne
+    private CategoryEntity parent;
 }

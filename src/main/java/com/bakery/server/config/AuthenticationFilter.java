@@ -43,6 +43,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             data.append("\n").append("LOGGING REQUEST-----------------------------------").append("\n")
                     .append("[REQUEST-ID]: ").append(requestId).append("\n")
                     .append("[PATH]: ").append(request.getRequestURI()).append("\n")
+                    .append("[METHOD]: ").append(request.getMethod()).append("\n")
                     .append("[QUERIES]: ").append(request.getQueryString()).append("\n")
                     .append("[HEADERS]: ").append("\n");
 

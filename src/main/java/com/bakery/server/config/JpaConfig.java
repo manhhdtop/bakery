@@ -1,7 +1,5 @@
 package com.bakery.server.config;
 
-import com.bakery.server.constant.Status;
-import com.bakery.server.constant.UserStatus;
 import com.bakery.server.entity.ActionEntity;
 import com.bakery.server.entity.RoleEntity;
 import com.bakery.server.entity.UserEntity;
@@ -15,14 +13,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Configuration
@@ -37,7 +37,7 @@ public class JpaConfig {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private EntityManager entityManager;
 
     @Value("${admin.user.username}")
     private String userAdminUsername;
@@ -51,59 +51,58 @@ public class JpaConfig {
     private String roleAdminCode;
     @Value("${admin.role.name}")
     private String roleAdminName;
-    private String actionEditAction = "ACTION.ADD";
-    private String actionEditActionName = "Quản lý Action";
-    private String actionViewAction = "ACTION.VIEW";
-    private String actionViewActionName = "Xem danh sách Action";
-    private String actionEditUser = "USER.ADD";
-    private String actionEditUserName = "Quản lý người dùng";
-    private String actionViewUser = "USER.VIEW";
-    private String actionViewUserName = "Xem danh sách người dùng";
 
     @Bean
-    AuditorAware<Long> auditorProvider() {
+    AuditorAware<UserEntity> auditorProvider() {
         return new AuditorAwareImpl();
     }
 
     @PostConstruct
+    @Transactional
+    @Modifying
     public void initData() {
         log.info("(initData) start init ------");
         List<ActionEntity> actionInit = new ArrayList<>();
+        Long createDate = new Date().getTime();
 
+        String actionEditAction = "ACTION.ADD";
+        String actionEditActionName = "Quản lý Action";
+        String actionViewAction = "ACTION.VIEW";
+        String actionViewActionName = "Xem danh sách Action";
+        String actionEditUser = "USER.ADD";
+        String actionEditUserName = "Quản lý người dùng";
+        String actionViewUser = "USER.VIEW";
+        String actionViewUserName = "Xem danh sách người dùng";
+        RoleEntity roleAdmin = roleRepository.findByCode(roleAdminCode);
+        if (roleAdmin == null) {
+            String sql = "INSERT INTO `bakery`.`role` (`deleted`,`created_date`,`updated_date`,`code`,`description`,`name`,`status`) VALUES(0, %d, %d, %s, %s, -99)";
+            entityManager.createNativeQuery(String.format(sql, createDate, createDate, roleAdminCode, roleAdminName, roleAdminName)).executeUpdate();
+            roleAdmin = roleRepository.findByCode(roleAdminCode);
+        }
+        RoleEntity finalRoleAdmin = roleAdmin;
         Arrays.asList(Arrays.asList(actionEditAction, actionEditActionName),
                 Arrays.asList(actionViewAction, actionViewActionName),
                 Arrays.asList(actionEditUser, actionEditUserName),
                 Arrays.asList(actionViewUser, actionViewUserName)).forEach(e -> {
             ActionEntity action = actionRepository.findByCode(e.get(0));
             if (action == null) {
-                action = new ActionEntity(e.get(0), e.get(1), Status.HIDDEN);
-                actionRepository.save(action);
+                String sql = "INSERT INTO `bakery`.`action` (`deleted`,`created_date`,`updated_date`,`code`,`description`,`name`,`status`) VALUES(0, %d, %d, %s, %s, -99)";
+                entityManager.createNativeQuery(String.format(sql, createDate, createDate, e.get(0), e.get(1), e.get(1))).executeUpdate();
+                action = actionRepository.findByCode(e.get(0));
+                sql = "INSERT INTO `bakery`.`role_action`(`role_id`,`action_id`) VALUES (%d, %d)";
+                entityManager.createNativeQuery(String.format(sql, finalRoleAdmin.getId(), action.getId())).executeUpdate();
             }
             actionInit.add(action);
         });
 
-        RoleEntity roleAdmin = roleRepository.findByCode(roleAdminCode);
-        if (roleAdmin == null) {
-            roleAdmin = new RoleEntity();
-            roleAdmin.setCode(roleAdminCode);
-            roleAdmin.setName(roleAdminName);
-            roleAdmin.setStatus(Status.HIDDEN);
-            roleAdmin.setActions(actionInit);
-
-            roleRepository.save(roleAdmin);
-        }
-
 
         UserEntity user = userRepository.findByUsername(userAdminUsername);
         if (user == null) {
-            user = new UserEntity();
-            user.setUsername(userAdminUsername);
-            user.setName(userAdminName);
-            user.setPassword(userAdminPassword);
-            user.setEmail(userAdminEmail);
-            user.setStatus(UserStatus.ACTIVE);
-            user.setRoles(Collections.singletonList(roleAdmin));
-            userRepository.save(user);
+            String sql = "INSERT INTO `bakery`.`user` (`deleted`,`created_date`,`updated_date`,`username`,`name`,`password`,`email`,`status`) VALUES(0, %d, %d, %s, %s, 1)";
+            entityManager.createNativeQuery(String.format(sql, createDate, createDate, userAdminUsername, userAdminName, userAdminPassword, userAdminEmail)).executeUpdate();
+            user = userRepository.findByUsername(userAdminUsername);
+            sql = "INSERT INTO `bakery`.`user_role`(`user_id`,`role_id`) VALUES (%d, %d)";
+            entityManager.createNativeQuery(String.format(sql, user.getId(), roleAdmin.getId())).executeUpdate();
         }
         log.info("(initData) end init ------");
     }

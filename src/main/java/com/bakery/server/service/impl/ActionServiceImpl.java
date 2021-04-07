@@ -52,6 +52,6 @@ public class ActionServiceImpl implements ActionService {
 
     @Override
     public List<ActionEntity> findAllStatusNotHidden() {
-        return actionRepository.findByStatusIsNot(Status.HIDDEN);
+        return actionRepository.findByStatusIsNot(Status.ADMINISTRATOR);
     }
 }

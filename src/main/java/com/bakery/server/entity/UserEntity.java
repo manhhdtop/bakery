@@ -31,6 +31,7 @@ public class UserEntity extends AuditModel {
     private String email;
     @Column(name = "status", columnDefinition = "int(1) default 1")
     private UserStatus status;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<RoleEntity> roles;
 }

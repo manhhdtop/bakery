@@ -1,5 +1,7 @@
 package com.bakery.server.constant;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.util.Arrays;
 
 public enum UserStatus {
@@ -24,6 +26,7 @@ public enum UserStatus {
         return userStatus == null ? null : userStatus.name;
     }
 
+    @JsonValue
     public int getStatus() {
         return status;
     }

@@ -52,6 +52,6 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<RoleEntity> findAllStatusNotHidden() {
-        return roleRepository.findByStatusIsNot(Status.HIDDEN);
+        return roleRepository.findByStatusIsNot(Status.ADMINISTRATOR);
     }
 }

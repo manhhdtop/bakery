@@ -2,7 +2,6 @@ package com.bakery.server.config;
 
 import com.bakery.server.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,7 +10,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -28,9 +26,8 @@ public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
     private CustomUserDetailsService customUserDetailsService;
     @Autowired
     private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-
-    @Value("${spring.security.oauth2.resourceserver.jwt.secret}")
-    private String secretKey;
+    @Autowired
+    private JwtTokenFilter jwtTokenFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -42,11 +39,10 @@ public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint(customAuthenticationEntryPoint)
                 .accessDeniedHandler(accessDeniedHandler)
-                .and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         ;
 
         http.addFilterBefore(authenticationFilter(), BasicAuthenticationFilter.class);
+        http.addFilterBefore(jwtTokenFilter, BasicAuthenticationFilter.class);
     }
 
     @Bean

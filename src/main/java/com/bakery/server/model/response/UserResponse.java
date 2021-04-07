@@ -13,5 +13,5 @@ public class UserResponse {
     private String name;
     private String email;
     private UserStatus status;
-    //private List<RoleEntity> roles;
+    private List<RoleEntity> roles;
 }
