@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = modelMapper.map(userCreateDto, UserEntity.class);
         if (!CollectionUtils.isEmpty(userCreateDto.getRoles())) {
             List<RoleEntity> roles = roleRepository.findAllById(userCreateDto.getRoles());
-            AssertUtil.notEmpty(roles, "role.notExist");
+            AssertUtil.notEmpty(roles, "role.not_exist");
             userEntity.setRoles(roles);
         }
 
@@ -65,11 +65,11 @@ public class UserServiceImpl implements UserService {
         validateUpdateUser(userUpdateDto);
 
         UserEntity userOld = userRepository.findById(userUpdateDto.getId()).orElse(null);
-        AssertUtil.notNull(userOld, "user.update.userId.notExist");
-        AssertUtil.isFalse(userOld.getUsername().equals(usernameAdministrator), "user.update.userId.notExist");
+        AssertUtil.notNull(userOld, "user.update.user_id.not_exist");
+        AssertUtil.isFalse(userOld.getUsername().equals(usernameAdministrator), "user.update.user_id.not_exist");
         UserEntity userEntity = modelMapper.map(userUpdateDto, UserEntity.class);
         List<RoleEntity> roles = roleRepository.findAllById(userUpdateDto.getRoles());
-        AssertUtil.notEmpty(roles, "role.notExist");
+        AssertUtil.notEmpty(roles, "role.not_exist");
         userEntity.setRoles(roles);
 
         UserEntity user = userRepository.save(userEntity);

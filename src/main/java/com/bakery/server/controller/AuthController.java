@@ -1,6 +1,8 @@
 package com.bakery.server.controller;
 
 import com.bakery.server.config.JwtTokenUtil;
+import com.bakery.server.config.UserPrincipal;
+import com.bakery.server.constant.UserStatus;
 import com.bakery.server.exception.BadRequestException;
 import com.bakery.server.exception.UnauthorizedException;
 import com.bakery.server.model.request.LoginRequest;
@@ -13,7 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,13 +42,19 @@ public class AuthController {
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         String username = request.getUsername().toLowerCase().trim();
         String password = request.getPassword().toLowerCase().trim();
-        UserDetails user;
+        UserPrincipal user;
         try {
-            user = customUserDetailsService.loadUserByUsername(username);
+            user = (UserPrincipal) customUserDetailsService.loadUserByUsername(username);
         } catch (Exception e) {
             throw new BadRequestException("login.error");
         }
         AssertUtil.isTrue(passwordEncoder.matches(password, user.getPassword()), "login.error");
+        if (user.getStatus().equals(UserStatus.DEACTIVE.getStatus())) {
+            throw BadRequestException.build("login.user.status.not_active");
+        }
+        if (user.getStatus().equals(UserStatus.LOCK.getStatus())) {
+            throw BadRequestException.build("login.user.status.locked");
+        }
         UserResponse userResponse = modelMapper.map(user, UserResponse.class);
         String token = jwtTokenUtil.generateAccessToken(user);
         return ResponseEntity.ok().body(LoginResponse.of(userResponse, token));

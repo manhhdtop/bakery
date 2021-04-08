@@ -24,7 +24,7 @@ public class UserPrincipal implements UserDetails {
     private Long id;
     private String name;
     private String username;
-    private UserStatus status;
+    private Integer status;
     private List<RoleEntity> roles;
     private String email;
     @JsonIgnore

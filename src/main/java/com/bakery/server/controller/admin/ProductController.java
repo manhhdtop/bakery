@@ -1,16 +1,61 @@
 package com.bakery.server.controller.admin;
 
-import com.bakery.server.exception.NotFoundException;
+import com.bakery.server.model.request.AddProductRequest;
+import com.bakery.server.model.request.UpdateProductRequest;
+import com.bakery.server.service.ProductService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @RequestMapping("${admin-base-path}/product")
 @RestController
 public class ProductController {
+    @Autowired
+    private ProductService productService;
+
     @GetMapping
-    private ResponseEntity<?> findAll() {
-        throw new NotFoundException();
+    private ResponseEntity<?> findAll(String name,
+                                      @Min(1) @RequestParam(name = "page", defaultValue = "1") Integer page,
+                                      @Min(5) @RequestParam(name = "size", defaultValue = "20") Integer size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        if (StringUtils.isNotBlank(name)) {
+            return ResponseEntity.ok(productService.findByName(name, pageable));
+        }
+        return ResponseEntity.ok(productService.findAll(pageable));
+    }
+
+    @GetMapping("/category")
+    private ResponseEntity<?> findByCategory(Long categoryId,
+                                             @Min(1) @RequestParam(name = "page", defaultValue = "1") Integer page,
+                                             @Min(5) @RequestParam(name = "size", defaultValue = "20") Integer size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return ResponseEntity.ok(productService.findByCategory(categoryId, pageable));
+    }
+
+    @GetMapping("/{id}")
+    private ResponseEntity<?> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.findById(id));
+    }
+
+    @PutMapping
+    private ResponseEntity<?> save(@Valid @NotNull @RequestBody AddProductRequest request) {
+        return ResponseEntity.ok(productService.save(request));
+    }
+
+    @PostMapping
+    private ResponseEntity<?> update(@Valid @NotNull @RequestBody UpdateProductRequest request) {
+        return ResponseEntity.ok(productService.update(request));
+    }
+
+    @DeleteMapping("/{id}")
+    private ResponseEntity<?> delete(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.delete(id));
     }
 }

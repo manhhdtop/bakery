@@ -38,7 +38,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public RoleEntity update(RoleUpdateDto roleUpdateDto) {
         RoleEntity roleOld = roleRepository.findById(roleUpdateDto.getId()).orElse(null);
-        AssertUtil.notNull(roleOld, "role.notExist");
+        AssertUtil.notNull(roleOld, "role.not_exist");
 
         modelMapper.map(roleUpdateDto, roleOld);
 

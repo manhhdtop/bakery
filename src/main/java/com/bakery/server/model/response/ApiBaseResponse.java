@@ -15,7 +15,7 @@ import static com.bakery.server.utils.MessageUtils.getMessage;
 @NoArgsConstructor
 public class ApiBaseResponse implements Serializable {
     public static String CODE_SUCCESS = "code.success";
-    public static String CODE_BAD_REQUEST = "code.badRequest";
+    public static String CODE_BAD_REQUEST = "code.bad_request";
     private static String MESSAGE_SUCCESS = "message.success";
     private String errorCode;
     private String errorDescription;

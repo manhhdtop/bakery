@@ -54,7 +54,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler imple
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             details.add(error.getDefaultMessage());
         }
-        ApiBaseResponse error = ApiBaseResponse.error(getMessage("message.badRequest"), details);
+        ApiBaseResponse error = ApiBaseResponse.error(getMessage("message.bad_request"), details);
         return ResponseEntity.badRequest().body(error);
     }
 

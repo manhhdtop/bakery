@@ -10,7 +10,7 @@ public class AccessDeniedException extends RuntimeException {
     private static final long serialVersionUID = 1616402540177823135L;
 
     public AccessDeniedException() {
-        super(MessageUtils.getMessage("message.accessDenied"));
+        super(MessageUtils.getMessage("message.access_denied"));
     }
 
 //    @Override
