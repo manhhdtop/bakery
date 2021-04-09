@@ -14,7 +14,7 @@ public class BadRequestException extends RuntimeException {
     }
 
     public static BadRequestException build(String message) {
-        return new BadRequestException(MessageUtils.getMessage(message));
+        return new BadRequestException(message);
     }
 
 //    @Override

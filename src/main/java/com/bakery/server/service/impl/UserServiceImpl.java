@@ -5,6 +5,7 @@ import com.bakery.server.entity.RoleEntity;
 import com.bakery.server.entity.UserEntity;
 import com.bakery.server.model.request.UserCreateDto;
 import com.bakery.server.model.request.UserUpdateDto;
+import com.bakery.server.model.response.ApiBaseResponse;
 import com.bakery.server.model.response.UserResponse;
 import com.bakery.server.repository.RoleRepository;
 import com.bakery.server.repository.UserRepository;
@@ -14,6 +15,9 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -36,14 +40,18 @@ public class UserServiceImpl implements UserService {
     private String usernameAdministrator;
 
     @Override
-    public List<UserResponse> findAll() {
-        List<UserEntity> userEntities = userRepository.findAll();
-        Type type = new TypeToken<List<UserResponse>>() {
-        }.getType();
-        return modelMapper.map(userEntities, type);
+    public ApiBaseResponse findAll(Pageable pageable) {
+        Page<UserEntity> page = userRepository.findAll(pageable);
+        return ApiBaseResponse.success(convertPage(page, pageable));
     }
 
-    public UserResponse save(UserCreateDto userCreateDto) {
+    @Override
+    public ApiBaseResponse findByName(String keyword, Pageable pageable) {
+        Page<UserEntity> page = userRepository.findByUsernameContainingOrNameContaining(keyword.trim(), pageable);
+        return ApiBaseResponse.success(convertPage(page, pageable));
+    }
+
+    public ApiBaseResponse save(UserCreateDto userCreateDto) {
         validateCreateUser(userCreateDto);
 
         UserEntity userOld = userRepository.findByUsername(userCreateDto.getUsername());
@@ -58,10 +66,10 @@ public class UserServiceImpl implements UserService {
         }
 
         UserEntity user = userRepository.save(userEntity);
-        return modelMapper.map(user, UserResponse.class);
+        return ApiBaseResponse.success(modelMapper.map(user, UserResponse.class));
     }
 
-    public UserResponse update(UserUpdateDto userUpdateDto) {
+    public ApiBaseResponse update(UserUpdateDto userUpdateDto) {
         validateUpdateUser(userUpdateDto);
 
         UserEntity userOld = userRepository.findById(userUpdateDto.getId()).orElse(null);
@@ -73,7 +81,7 @@ public class UserServiceImpl implements UserService {
         userEntity.setRoles(roles);
 
         UserEntity user = userRepository.save(userEntity);
-        return modelMapper.map(user, UserResponse.class);
+        return ApiBaseResponse.success(modelMapper.map(user, UserResponse.class));
     }
 
     @Override
@@ -98,5 +106,13 @@ public class UserServiceImpl implements UserService {
         if (userUpdateDto.getStatus() == null) {
             userUpdateDto.setStatus(UserStatus.DEACTIVE.getStatus());
         }
+    }
+
+    private Page<UserResponse> convertPage(Page<UserEntity> page, Pageable pageable) {
+        List<UserEntity> userEntities = page.getContent();
+        Type type = new TypeToken<List<UserResponse>>() {
+        }.getType();
+        List<UserResponse> userResponses = modelMapper.map(userEntities, type);
+        return new PageImpl<>(userResponses, pageable, page.getTotalElements());
     }
 }

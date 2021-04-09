@@ -1,15 +1,24 @@
 package com.bakery.server.repository;
 
-import com.bakery.server.constant.Status;
 import com.bakery.server.entity.RoleEntity;
-import com.bakery.server.repository.base.BaseRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface RoleRepository extends BaseRepository<RoleEntity, Long> {
+public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
     RoleEntity findByCode(String code);
 
-    List<RoleEntity> findByStatusIsNot(Status status);
+    Page<RoleEntity> findByCodeContaining(String code, Pageable pageable);
+
+    RoleEntity findByStatus(Integer status);
+
+    Page<RoleEntity> findByStatusIsNot(Integer status, Pageable pageable);
+
+    Page<RoleEntity> findByName(String keyword, Pageable pageable);
+
+    Page<RoleEntity> findByNameAndStatusIsNot(String keyword, Integer status, Pageable pageable);
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +47,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler imple
     @ExceptionHandler(BadRequestException.class)
     public final void handleBadRequestException(BadRequestException ex, WebRequest request) {
         throw ex;
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public final void handleSizeLimitExceededException(MaxUploadSizeExceededException ex, WebRequest request) {
+        throw BadRequestException.build("file.limit_exceeded");
     }
 
     @Override

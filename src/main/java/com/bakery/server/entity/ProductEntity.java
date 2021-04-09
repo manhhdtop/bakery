@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.List;
 
 @AllArgsConstructor
 @Data
@@ -21,8 +22,8 @@ public class ProductEntity extends AuditModel {
     private String name;
     @Column(name = "description")
     private String description;
-    @Column(name = "image")
-    private String image;
+    @OneToMany
+    private List<FileUploadEntity> images;
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private CategoryEntity category;

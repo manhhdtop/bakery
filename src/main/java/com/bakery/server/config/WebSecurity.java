@@ -1,6 +1,8 @@
 package com.bakery.server.config;
 
+import com.bakery.server.entity.base.AuditModel;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -16,10 +18,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebMvc
 public class WebSecurity implements WebMvcConfigurer {
+    @Value("${file.root-path}")
+    private String rootPath;
     @Value("${file.upload-dir}")
     private String uploadDir;
-    @Value("${file.path_uploaded}")
-    private String rootPath;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -28,7 +30,7 @@ public class WebSecurity implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
-        registry.addResourceHandler("/uploads/**").addResourceLocations("file:" + uploadDir + rootPath + "/");
+        registry.addResourceHandler("/files/**").addResourceLocations("file:" + rootPath + uploadDir + "/");
     }
 
     @Override
@@ -56,6 +58,13 @@ public class WebSecurity implements WebMvcConfigurer {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setFieldMatchingEnabled(true);
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+//        PropertyMap<Object, AuditModel> skipCreatedDatesMap = new PropertyMap<>() {
+//            protected void configure() {
+//                skip().setCreatedDate(null);
+//                skip().setCreatedBy(null);
+//            }
+//        };
+//        modelMapper.addMappings(skipCreatedDatesMap);
         return modelMapper;
     }
 }

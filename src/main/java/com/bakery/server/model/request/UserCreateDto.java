@@ -1,6 +1,5 @@
 package com.bakery.server.model.request;
 
-import com.bakery.server.constant.UserStatus;
 import lombok.Data;
 import org.springframework.security.crypto.password.PasswordEncoder;
 

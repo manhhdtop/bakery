@@ -1,11 +1,13 @@
 package com.bakery.server.service.impl;
 
 import com.bakery.server.entity.CategoryEntity;
+import com.bakery.server.entity.FileUploadEntity;
 import com.bakery.server.entity.ProductEntity;
 import com.bakery.server.model.request.AddProductRequest;
 import com.bakery.server.model.request.UpdateProductRequest;
 import com.bakery.server.model.response.ApiBaseResponse;
 import com.bakery.server.repository.CategoryRepository;
+import com.bakery.server.repository.FileUploadRepository;
 import com.bakery.server.repository.ProductRepository;
 import com.bakery.server.service.ProductService;
 import com.bakery.server.utils.AssertUtil;
@@ -13,11 +15,18 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
+@Transactional
 public class ProductServiceImpl implements ProductService {
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private FileUploadRepository fileUploadRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -51,6 +60,17 @@ public class ProductServiceImpl implements ProductService {
         AssertUtil.notNull(categoryEntity, "category.not_found");
         ProductEntity entity = modelMapper.map(request, ProductEntity.class);
         entity.setCategory(categoryEntity);
+        List<FileUploadEntity> fileUploadEntities = new ArrayList<>();
+
+        entity = productRepository.save(entity);
+        ProductEntity finalEntity = entity;
+        request.getImageUploads().forEach(e -> {
+            FileUploadEntity fileUploadEntity = modelMapper.map(e, FileUploadEntity.class);
+            fileUploadEntity.setReferenceId(finalEntity.getId());
+            fileUploadEntities.add(fileUploadEntity);
+        });
+        fileUploadRepository.saveAll(fileUploadEntities);
+        entity.setImages(fileUploadEntities);
         entity = productRepository.save(entity);
         return ApiBaseResponse.success(entity);
     }
@@ -61,8 +81,18 @@ public class ProductServiceImpl implements ProductService {
         AssertUtil.notNull(entity, "category.not_found");
         CategoryEntity categoryEntity = categoryRepository.findById(request.getCategoryId()).orElse(null);
         AssertUtil.notNull(categoryEntity, "category.not_found");
-        entity = modelMapper.map(request, ProductEntity.class);
+        modelMapper.map(request, entity);
         entity.setCategory(categoryEntity);
+        List<FileUploadEntity> fileUploadEntities = new ArrayList<>();
+        ProductEntity finalEntity = entity;
+        request.getImageUploads().forEach(e -> {
+            FileUploadEntity fileUploadEntity = modelMapper.map(e, FileUploadEntity.class);
+            fileUploadEntity.setReferenceId(finalEntity.getId());
+            fileUploadEntities.add(fileUploadEntity);
+        });
+        fileUploadRepository.saveAll(fileUploadEntities);
+        entity.setImages(fileUploadEntities);
+
         entity = productRepository.save(entity);
         return ApiBaseResponse.success(entity);
     }

@@ -2,8 +2,8 @@
 # Config
 # ===============================
 file:
-  upload-dir: /uploads
-  path_uploaded: E:/workspace/toprate
+  root-path: E:/workspace/toprate
+  upload-dir: /files
 admin-base-path: /admin
 admin:
   user:
@@ -22,6 +22,8 @@ server:
   error:
     include-message: always
     include-stacktrace: never
+  tomcat:
+    max-swallow-size: -1
 # ===============================
 # DATABASE
 # ===============================
@@ -43,6 +45,10 @@ spring:
       resourceserver:
         jwt:
           secret: MdjXPJbHCSQUhDhVENhHmBbZh
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 20MB
 #
 #
 #

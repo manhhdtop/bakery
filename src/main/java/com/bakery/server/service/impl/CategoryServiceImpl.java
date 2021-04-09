@@ -68,7 +68,7 @@ public class CategoryServiceImpl implements CategoryService {
             parent = categoryRepository.findById(request.getParentId()).orElse(null);
             AssertUtil.notNull(parent, "category.parent.not_found");
         }
-        entity = modelMapper.map(request, CategoryEntity.class);
+        modelMapper.map(request, entity);
         entity.setParent(parent);
         entity = categoryRepository.save(entity);
         return ApiBaseResponse.success(entity);

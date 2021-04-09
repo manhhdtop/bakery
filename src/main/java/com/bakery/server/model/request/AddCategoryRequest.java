@@ -1,6 +1,5 @@
 package com.bakery.server.model.request;
 
-import com.bakery.server.constant.Status;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
