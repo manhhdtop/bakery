@@ -32,7 +32,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public ApiBaseResponse findByNameNotHidden(String keyword, Pageable pageable) {
-        return ApiBaseResponse.success(roleRepository.findByNameAndStatusIsNot(keyword, Status.ADMINISTRATOR.getStatus(), pageable));
+        return ApiBaseResponse.success(roleRepository.findByNameContainingAndStatusIsNot(keyword, Status.ADMINISTRATOR.getStatus(), pageable));
     }
 
     @Override
