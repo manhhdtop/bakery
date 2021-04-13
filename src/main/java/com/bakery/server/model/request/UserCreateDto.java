@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 public class UserCreateDto {
-    @NotBlank(message = "{user.username.canNotBlank}")
+    @NotBlank(message = "{user.username.can_not_blank}")
     private String username;
     @NotBlank
     private String name;
@@ -18,7 +18,7 @@ public class UserCreateDto {
     private String email;
     private Integer status;
     @NotEmpty
-    private List<Long> roles;
+    private List<Long> roleIds;
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
         password = passwordEncoder.encode(password);

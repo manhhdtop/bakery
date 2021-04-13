@@ -11,6 +11,7 @@ import com.bakery.server.repository.RoleRepository;
 import com.bakery.server.repository.UserRepository;
 import com.bakery.server.service.UserService;
 import com.bakery.server.utils.AssertUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,8 +60,8 @@ public class UserServiceImpl implements UserService {
 
         userCreateDto.encodePassword(passwordEncoder);
         UserEntity userEntity = modelMapper.map(userCreateDto, UserEntity.class);
-        if (!CollectionUtils.isEmpty(userCreateDto.getRoles())) {
-            List<RoleEntity> roles = roleRepository.findAllById(userCreateDto.getRoles());
+        if (!CollectionUtils.isEmpty(userCreateDto.getRoleIds())) {
+            List<RoleEntity> roles = roleRepository.findAllById(userCreateDto.getRoleIds());
             AssertUtil.notEmpty(roles, "role.not_exist");
             userEntity.setRoles(roles);
         }
@@ -75,13 +76,22 @@ public class UserServiceImpl implements UserService {
         UserEntity userOld = userRepository.findById(userUpdateDto.getId()).orElse(null);
         AssertUtil.notNull(userOld, "user.update.user_id.not_exist");
         AssertUtil.isFalse(userOld.getUsername().equals(usernameAdministrator), "user.update.user_id.not_exist");
-        UserEntity userEntity = modelMapper.map(userUpdateDto, UserEntity.class);
-        List<RoleEntity> roles = roleRepository.findAllById(userUpdateDto.getRoles());
+        String password = null;
+        if (StringUtils.isNotBlank(userUpdateDto.getPassword())) {
+            userUpdateDto.setPassword(passwordEncoder.encode(userUpdateDto.getPassword().trim()));
+        } else {
+            password = userOld.getPassword();
+        }
+        modelMapper.map(userUpdateDto, userOld);
+        if (password != null) {
+            userOld.setPassword(password);
+        }
+        List<RoleEntity> roles = roleRepository.findAllById(userUpdateDto.getRoleIds());
         AssertUtil.notEmpty(roles, "role.not_exist");
-        userEntity.setRoles(roles);
+        userOld.setRoles(roles);
 
-        UserEntity user = userRepository.save(userEntity);
-        return ApiBaseResponse.success(modelMapper.map(user, UserResponse.class));
+        userOld = userRepository.save(userOld);
+        return ApiBaseResponse.success(modelMapper.map(userOld, UserResponse.class));
     }
 
     @Override

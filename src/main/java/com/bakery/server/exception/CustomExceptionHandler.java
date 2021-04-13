@@ -16,6 +16,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,9 +60,20 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler imple
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         List<String> details = new ArrayList<>();
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-            details.add(error.getDefaultMessage());
+            details.add(error.getField() + ": " + error.getDefaultMessage());
         }
         ApiBaseResponse error = ApiBaseResponse.error(getMessage("message.bad_request"), details);
+        return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
+        List<String> errors = new ArrayList<>();
+        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+            errors.add(violation.getRootBeanClass().getName() + " " + violation.getPropertyPath() + ": " + violation.getMessage());
+        }
+
+        ApiBaseResponse error = ApiBaseResponse.error(getMessage("message.bad_request"), errors);
         return ResponseEntity.badRequest().body(error);
     }
 
