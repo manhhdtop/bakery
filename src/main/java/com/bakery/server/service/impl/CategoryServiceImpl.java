@@ -86,7 +86,7 @@ public class CategoryServiceImpl implements CategoryService {
             entity.setDeleted(1);
             categoryRepository.save(entity);
         }
-        return ApiBaseResponse.success(null);
+        return ApiBaseResponse.success();
     }
 
     @Override

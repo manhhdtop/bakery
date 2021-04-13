@@ -14,7 +14,7 @@ public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
 
     Page<RoleEntity> findByCodeContaining(String code, Pageable pageable);
 
-    RoleEntity findByStatus(Integer status);
+    List<RoleEntity> findByStatus(Integer status);
 
     Page<RoleEntity> findByStatusIsNot(Integer status, Pageable pageable);
 

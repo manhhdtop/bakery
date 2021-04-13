@@ -104,6 +104,6 @@ public class ProductServiceImpl implements ProductService {
             entity.setDeleted(1);
             productRepository.save(entity);
         }
-        return ApiBaseResponse.success(null);
+        return ApiBaseResponse.success();
     }
 }

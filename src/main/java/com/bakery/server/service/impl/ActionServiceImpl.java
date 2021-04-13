@@ -72,4 +72,9 @@ public class ActionServiceImpl implements ActionService {
     public ApiBaseResponse findByStatusNotHidden(Pageable pageable) {
         return ApiBaseResponse.success(actionRepository.findByStatusIsNot(Status.ADMINISTRATOR.getStatus(), pageable));
     }
+
+    @Override
+    public ApiBaseResponse findByStatus(Integer status) {
+        return ApiBaseResponse.success(actionRepository.findByStatus(status));
+    }
 }

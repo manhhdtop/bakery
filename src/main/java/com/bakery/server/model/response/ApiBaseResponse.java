@@ -22,6 +22,10 @@ public class ApiBaseResponse implements Serializable {
     private Object data;
     private Object optional;
 
+    public static ApiBaseResponse success() {
+        return success(getMessage(MESSAGE_SUCCESS), null);
+    }
+
     public static ApiBaseResponse success(Object data) {
         return success(getMessage(MESSAGE_SUCCESS), data);
     }

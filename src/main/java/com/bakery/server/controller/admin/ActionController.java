@@ -1,7 +1,9 @@
 package com.bakery.server.controller.admin;
 
+import com.bakery.server.constant.Status;
 import com.bakery.server.model.request.ActionCreateDto;
 import com.bakery.server.model.request.ActionUpdateDto;
+import com.bakery.server.model.response.ApiBaseResponse;
 import com.bakery.server.service.ActionService;
 import com.bakery.server.utils.Utils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +48,11 @@ public class ActionController {
         return ResponseEntity.ok(actionService.findByStatusNotHidden(pageable));
     }
 
+    @GetMapping("/actives")
+    public ResponseEntity<?> findByStatusActive() {
+        return ResponseEntity.ok(actionService.findByStatus(Status.ACTIVE.getStatus()));
+    }
+
     @PutMapping
     public ResponseEntity<?> save(@Valid @RequestBody ActionCreateDto roleCreateDto) {
         return ResponseEntity.ok(actionService.save(roleCreateDto));
@@ -56,9 +63,9 @@ public class ActionController {
         return ResponseEntity.ok(actionService.update(roleUpdateDto));
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> delete(Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         actionService.delete(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ApiBaseResponse.success());
     }
 }

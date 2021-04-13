@@ -3,6 +3,7 @@ package com.bakery.server.controller.admin;
 import com.bakery.server.constant.Status;
 import com.bakery.server.model.request.RoleCreateDto;
 import com.bakery.server.model.request.RoleUpdateDto;
+import com.bakery.server.model.response.ApiBaseResponse;
 import com.bakery.server.service.RoleService;
 import com.bakery.server.utils.Utils;
 import org.apache.commons.lang3.StringUtils;
@@ -60,9 +61,9 @@ public class RoleController {
         return ResponseEntity.ok(roleService.update(roleUpdateDto));
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> delete(Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         roleService.delete(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ApiBaseResponse.success());
     }
 }

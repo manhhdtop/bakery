@@ -14,6 +14,8 @@ public interface ActionService {
 
     ApiBaseResponse findByStatusNotHidden(Pageable pageable);
 
+    ApiBaseResponse findByStatus(Integer status);
+
     ApiBaseResponse save(ActionCreateDto roleCreateDto);
 
     ApiBaseResponse update(ActionUpdateDto roleUpdateDto);
