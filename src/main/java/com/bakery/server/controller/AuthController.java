@@ -57,7 +57,7 @@ public class AuthController {
         }
         UserResponse userResponse = modelMapper.map(user, UserResponse.class);
         String token = jwtTokenUtil.generateAccessToken(user);
-        return ResponseEntity.ok().body(LoginResponse.of(userResponse, token));
+        return ResponseEntity.ok(LoginResponse.of(userResponse, token));
     }
 
     @PostMapping("/check-token")
@@ -80,12 +80,9 @@ public class AuthController {
             throw UnauthorizedException.build();
         }
         token = token.substring(7);
-        if (jwtTokenUtil.isExpired(token)) {
-            throw UnauthorizedException.build();
-        }
 
         token = jwtTokenUtil.refreshToken(token);
         UserResponse user = jwtTokenUtil.getUser(token);
-        return ResponseEntity.ok().body(LoginResponse.of(user, token));
+        return ResponseEntity.ok(LoginResponse.of(user, token));
     }
 }

@@ -53,7 +53,12 @@ public class JwtTokenUtil {
     }
 
     public String refreshToken(String token) {
-        Claims claims = getClaims(token);
+        Claims claims;
+        try {
+            claims = getClaims(token);
+        } catch (ExpiredJwtException ex) {
+            claims = ex.getClaims();
+        }
 
         return Jwts.builder()
                 .base64UrlEncodeWith(getJwtBase64Encoder())
