@@ -12,6 +12,8 @@ import java.util.List;
 public class AddProductRequest {
     @NotBlank
     private String name;
+    @NotBlank
+    private String slug;
     private String description;
     @NotEmpty
     private List<UploadFileResponse> imageUploads;
@@ -19,4 +21,10 @@ public class AddProductRequest {
     private Long categoryId;
     @NotNull
     private Integer status;
+
+    public void validData() {
+        name = name.trim();
+        slug = slug.trim();
+        description = description.trim();
+    }
 }

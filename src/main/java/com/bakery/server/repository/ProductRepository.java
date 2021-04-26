@@ -13,4 +13,6 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     @Query("SELECT p FROM ProductEntity p WHERE p.category.id=:categoryId")
     Page<ProductEntity> findByCategory(Long categoryId, Pageable pageable);
+
+    ProductEntity findBySlug(String slug);
 }

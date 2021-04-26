@@ -25,6 +25,8 @@ public class CategoryEntity extends AuditModel {
 
     @Column(name = "name")
     private String name;
+    @Column(name = "slug")
+    private String slug;
     @Column(name = "description")
     private String description;
     @Column(name = "status", columnDefinition = "int default 1")

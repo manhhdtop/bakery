@@ -41,6 +41,11 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.findListActive());
     }
 
+    @GetMapping("/create-slug")
+    private ResponseEntity<?> createSlug(String categoryName) {
+        return ResponseEntity.ok(categoryService.createSlug(categoryName));
+    }
+
     @GetMapping("/{id}")
     private ResponseEntity<?> findById(@PathVariable Long id) {
         return ResponseEntity.ok(categoryService.findById(id));

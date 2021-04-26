@@ -22,4 +22,6 @@ public interface CategoryService {
     ApiBaseResponse delete(Long id);
 
     ApiBaseResponse findListActive();
+
+    ApiBaseResponse createSlug(String categoryName);
 }

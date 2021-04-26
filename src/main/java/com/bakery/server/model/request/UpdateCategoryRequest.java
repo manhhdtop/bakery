@@ -11,8 +11,16 @@ public class UpdateCategoryRequest {
     private Long id;
     @NotBlank
     private String name;
+    @NotBlank
+    private String slug;
     private String description;
     @NotNull
     private Integer status;
     private Long parentId;
+
+    public void validData() {
+        name = name.trim();
+        slug = slug.trim();
+        description = description.trim();
+    }
 }

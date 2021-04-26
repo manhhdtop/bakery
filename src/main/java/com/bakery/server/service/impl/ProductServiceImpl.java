@@ -11,6 +11,7 @@ import com.bakery.server.repository.FileUploadRepository;
 import com.bakery.server.repository.ProductRepository;
 import com.bakery.server.service.ProductService;
 import com.bakery.server.utils.AssertUtil;
+import com.bakery.server.utils.Utils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -56,6 +57,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ApiBaseResponse save(AddProductRequest request) {
+        request.validData();
         CategoryEntity categoryEntity = categoryRepository.findById(request.getCategoryId()).orElse(null);
         AssertUtil.notNull(categoryEntity, "category.not_found");
         ProductEntity entity = modelMapper.map(request, ProductEntity.class);
@@ -77,6 +79,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ApiBaseResponse update(UpdateProductRequest request) {
+        request.validData();
         ProductEntity entity = productRepository.findById(request.getId()).orElse(null);
         AssertUtil.notNull(entity, "category.not_found");
         CategoryEntity categoryEntity = categoryRepository.findById(request.getCategoryId()).orElse(null);
@@ -105,5 +108,11 @@ public class ProductServiceImpl implements ProductService {
             productRepository.save(entity);
         }
         return ApiBaseResponse.success();
+    }
+
+    @Override
+    public ApiBaseResponse createSlug(String productName) {
+        String slug = Utils.createSlug(productName);
+        return ApiBaseResponse.success(slug);
     }
 }

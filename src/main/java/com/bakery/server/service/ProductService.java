@@ -19,4 +19,6 @@ public interface ProductService {
     ApiBaseResponse update(UpdateProductRequest request);
 
     ApiBaseResponse delete(Long id);
+
+    ApiBaseResponse createSlug(String productName);
 }

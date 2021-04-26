@@ -14,6 +14,8 @@ public class UpdateProductRequest {
     private Long id;
     @NotBlank
     private String name;
+    @NotBlank
+    private String slug;
     private String description;
     @NotEmpty
     private List<UploadFileResponse> imageUploads;
@@ -21,4 +23,10 @@ public class UpdateProductRequest {
     private Long categoryId;
     @NotNull
     private Integer status;
+
+    public void validData() {
+        name = name.trim();
+        slug = slug.trim();
+        description = description.trim();
+    }
 }

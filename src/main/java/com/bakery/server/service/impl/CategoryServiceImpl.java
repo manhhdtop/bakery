@@ -10,10 +10,12 @@ import com.bakery.server.repository.CategoryRepository;
 import com.bakery.server.repository.ProductRepository;
 import com.bakery.server.service.CategoryService;
 import com.bakery.server.utils.AssertUtil;
+import com.bakery.server.utils.Utils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -43,6 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ApiBaseResponse save(AddCategoryRequest request) {
+        request.validData();
         CategoryEntity parent = null;
         if (request.getParentId() != null) {
             parent = categoryRepository.findById(request.getParentId()).orElse(null);
@@ -61,6 +64,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ApiBaseResponse update(UpdateCategoryRequest request) {
+        request.validData();
         CategoryEntity entity = categoryRepository.findById(request.getId()).orElse(null);
         AssertUtil.notNull(entity, "category.not_found");
         CategoryEntity parent = null;
@@ -92,5 +96,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ApiBaseResponse findListActive() {
         return ApiBaseResponse.success(categoryRepository.findByStatus(Status.ACTIVE.getStatus()));
+    }
+
+    @Override
+    public ApiBaseResponse createSlug(String categoryName) {
+        String slug = Utils.createSlug(categoryName);
+        return ApiBaseResponse.success(slug);
     }
 }

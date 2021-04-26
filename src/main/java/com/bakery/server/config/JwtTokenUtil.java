@@ -42,7 +42,6 @@ public class JwtTokenUtil {
         UserResponse userResponse = modelMapper.map(user, UserResponse.class);
 
         return Jwts.builder()
-                .base64UrlEncodeWith(getJwtBase64Encoder())
                 .setId(String.valueOf(userResponse.getId()))
                 .setSubject(new Gson().toJson(userResponse, UserResponse.class))
                 .setIssuer(jwtIssuer)
@@ -61,7 +60,6 @@ public class JwtTokenUtil {
         }
 
         return Jwts.builder()
-                .base64UrlEncodeWith(getJwtBase64Encoder())
                 .setSubject(claims.getSubject())
                 .setIssuedAt(claims.getIssuedAt())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpired))
@@ -72,7 +70,6 @@ public class JwtTokenUtil {
     public JwtParser getJwtParser() {
 
         return Jwts.parserBuilder()
-                .base64UrlDecodeWith(getJwtBase64Decoder())
                 .setSigningKey(getKey())
                 .build();
     }
@@ -119,29 +116,4 @@ public class JwtTokenUtil {
         return new SecretKeySpec(secret, signatureAlgorithm.getJcaName());
     }
 
-    private Encoder<byte[], String> getJwtBase64Encoder() {
-        return new Encoder<byte[], String>() {
-            @Override
-            public String encode(byte[] bytes) throws EncodingException {
-                return getEncoder().encodeToString(bytes);
-            }
-        };
-    }
-
-    private Decoder<String, byte[]> getJwtBase64Decoder() {
-        return new Decoder<String, byte[]>() {
-            @Override
-            public byte[] decode(String s) throws DecodingException {
-                return getDecoder().decode(s);
-            }
-        };
-    }
-
-    private Base64.Encoder getEncoder() {
-        return Base64.getEncoder();
-    }
-
-    private Base64.Decoder getDecoder() {
-        return Base64.getDecoder();
-    }
 }

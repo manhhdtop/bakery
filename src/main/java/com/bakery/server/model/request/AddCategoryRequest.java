@@ -9,8 +9,16 @@ import javax.validation.constraints.NotNull;
 public class AddCategoryRequest {
     @NotBlank
     private String name;
+    @NotBlank
+    private String slug;
     private String description;
     private Long parentId;
     @NotNull
     private Integer status;
+
+    public void validData() {
+        name = name.trim();
+        slug = slug.trim();
+        description = description.trim();
+    }
 }

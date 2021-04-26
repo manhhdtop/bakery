@@ -44,6 +44,11 @@ public class ProductController {
         return ResponseEntity.ok(productService.findById(id));
     }
 
+    @GetMapping("/create-slug")
+    private ResponseEntity<?> createSlug(String productName) {
+        return ResponseEntity.ok(productService.createSlug(productName));
+    }
+
     @PutMapping
     private ResponseEntity<?> save(@Valid @NotNull @RequestBody AddProductRequest request) {
         return ResponseEntity.ok(productService.save(request));

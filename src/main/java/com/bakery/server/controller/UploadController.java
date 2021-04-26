@@ -59,4 +59,9 @@ public class UploadController {
         });
         return ResponseEntity.ok(responses);
     }
+
+    @PostMapping("/ck-upload-images")
+    private ResponseEntity<?> ckUploadImages(@NotEmpty @RequestParam("upload") List<MultipartFile> files) {
+        return ResponseEntity.ok(uploadImages(files));
+    }
 }
