@@ -6,6 +6,7 @@ import com.bakery.server.entity.ProductEntity;
 import com.bakery.server.model.request.AddCategoryRequest;
 import com.bakery.server.model.request.UpdateCategoryRequest;
 import com.bakery.server.model.response.ApiBaseResponse;
+import com.bakery.server.model.response.CategoryResponse;
 import com.bakery.server.repository.CategoryRepository;
 import com.bakery.server.repository.ProductRepository;
 import com.bakery.server.service.CategoryService;
@@ -15,8 +16,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -102,5 +103,18 @@ public class CategoryServiceImpl implements CategoryService {
     public ApiBaseResponse createSlug(String categoryName) {
         String slug = Utils.createSlug(categoryName);
         return ApiBaseResponse.success(slug);
+    }
+
+    @Override
+    public ApiBaseResponse findBySlug(String slug) {
+        CategoryEntity categoryEntity = categoryRepository.findBySlug(slug.trim().toLowerCase());
+        AssertUtil.notNull(categoryEntity, "category.not_found");
+        AssertUtil.isTrue(categoryEntity.getStatus().equals(Status.ACTIVE.getStatus()), "category.not_found");
+        return ApiBaseResponse.success(CategoryResponse.of(categoryEntity));
+    }
+
+    @Override
+    public ApiBaseResponse getMenuCategories() {
+        return ApiBaseResponse.success(categoryRepository.getMenuCategories());
     }
 }

@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 
 @RequestMapping("${admin-base-path}/product")
 @RestController
-public class ProductController {
+public class AdminProductController {
     @Autowired
     private ProductService productService;
 

@@ -24,4 +24,8 @@ public interface CategoryService {
     ApiBaseResponse findListActive();
 
     ApiBaseResponse createSlug(String categoryName);
+
+    ApiBaseResponse findBySlug(String slug);
+
+    ApiBaseResponse getMenuCategories();
 }

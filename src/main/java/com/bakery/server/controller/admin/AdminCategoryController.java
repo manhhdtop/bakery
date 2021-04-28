@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 
 @RequestMapping("${admin-base-path}/category")
 @RestController
-public class CategoryController {
+public class AdminCategoryController {
     @Autowired
     private CategoryService categoryService;
 
