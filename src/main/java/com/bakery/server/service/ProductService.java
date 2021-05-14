@@ -1,6 +1,7 @@
 package com.bakery.server.service;
 
 import com.bakery.server.model.request.AddProductRequest;
+import com.bakery.server.model.request.ProductRequest;
 import com.bakery.server.model.request.UpdateProductRequest;
 import com.bakery.server.model.response.ApiBaseResponse;
 import org.springframework.data.domain.Pageable;
@@ -21,4 +22,8 @@ public interface ProductService {
     ApiBaseResponse delete(Long id);
 
     ApiBaseResponse createSlug(String productName);
+
+    ApiBaseResponse getHomeProduct(ProductRequest request);
+
+    ApiBaseResponse findBySlug(String slug);
 }

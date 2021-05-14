@@ -17,6 +17,8 @@ public class UpdateProductRequest {
     @NotBlank
     private String slug;
     private String description;
+    @NotNull
+    private Long price;
     @NotEmpty
     private List<UploadFileResponse> imageUploads;
     @NotNull

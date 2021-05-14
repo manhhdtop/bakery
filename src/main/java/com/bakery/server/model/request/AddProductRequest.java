@@ -15,6 +15,8 @@ public class AddProductRequest {
     @NotBlank
     private String slug;
     private String description;
+    @NotNull
+    private Long price;
     @NotEmpty
     private List<UploadFileResponse> imageUploads;
     @NotNull

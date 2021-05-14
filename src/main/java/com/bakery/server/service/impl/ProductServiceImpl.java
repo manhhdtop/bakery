@@ -4,8 +4,10 @@ import com.bakery.server.entity.CategoryEntity;
 import com.bakery.server.entity.FileUploadEntity;
 import com.bakery.server.entity.ProductEntity;
 import com.bakery.server.model.request.AddProductRequest;
+import com.bakery.server.model.request.ProductRequest;
 import com.bakery.server.model.request.UpdateProductRequest;
 import com.bakery.server.model.response.ApiBaseResponse;
+import com.bakery.server.model.response.UploadFileResponse;
 import com.bakery.server.repository.CategoryRepository;
 import com.bakery.server.repository.FileUploadRepository;
 import com.bakery.server.repository.ProductRepository;
@@ -17,9 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -88,12 +93,23 @@ public class ProductServiceImpl implements ProductService {
         entity.setCategory(categoryEntity);
         List<FileUploadEntity> fileUploadEntities = new ArrayList<>();
         ProductEntity finalEntity = entity;
-        request.getImageUploads().forEach(e -> {
+        request.getImageUploads().stream().filter(e -> e.getId() == null).forEach(e -> {
             FileUploadEntity fileUploadEntity = modelMapper.map(e, FileUploadEntity.class);
             fileUploadEntity.setReferenceId(finalEntity.getId());
             fileUploadEntities.add(fileUploadEntity);
         });
         fileUploadRepository.saveAll(fileUploadEntities);
+        List<Long> idOlds = request.getImageUploads().stream().map(UploadFileResponse::getId).filter(Objects::nonNull).collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(idOlds)) {
+            List<FileUploadEntity> byReferenceId = fileUploadRepository.findByReferenceId(request.getId());
+            if (!CollectionUtils.isEmpty(idOlds)) {
+                byReferenceId = byReferenceId.stream().filter(e -> !idOlds.contains(e.getId())).collect(Collectors.toList());
+                if (!CollectionUtils.isEmpty(idOlds)) {
+                    byReferenceId.forEach(e -> e.setDeleted(1));
+                    fileUploadRepository.saveAll(byReferenceId);
+                }
+            }
+        }
         entity.setImages(fileUploadEntities);
 
         entity = productRepository.save(entity);
@@ -114,5 +130,15 @@ public class ProductServiceImpl implements ProductService {
     public ApiBaseResponse createSlug(String productName) {
         String slug = Utils.createSlug(productName);
         return ApiBaseResponse.success(slug);
+    }
+
+    @Override
+    public ApiBaseResponse getHomeProduct(ProductRequest request) {
+        return ApiBaseResponse.success(productRepository.getHomeProduct(request));
+    }
+
+    @Override
+    public ApiBaseResponse findBySlug(String slug) {
+        return ApiBaseResponse.success(productRepository.findBySlug(slug));
     }
 }

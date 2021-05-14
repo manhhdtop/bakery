@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Data
 @RequiredArgsConstructor
 public class UploadFileResponse {
+    private Long id;
     private Long referenceId;
     private String fileName;
     private String uri;

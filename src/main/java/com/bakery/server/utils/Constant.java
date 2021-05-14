@@ -5,6 +5,10 @@ import java.util.List;
 
 public interface Constant {
 
+    class RESULT_SET_MAPPING {
+        public static final String PRODUCT_RESPONSE = "PRODUCT_RESPONSE_MAPPING";
+    }
+
     class CONTENT_TYPE_FILE {
         public static final String PNG = "image/png";
         public static final String JPEG = "image/jpeg";
@@ -51,5 +55,10 @@ public interface Constant {
             ALL.addAll(IMAGE);
             ALL.addAll(COMPRESSION);
         }
+    }
+
+    class SqlType {
+        public static final boolean COUNTING = true;
+        public static final boolean LIST = false;
     }
 }

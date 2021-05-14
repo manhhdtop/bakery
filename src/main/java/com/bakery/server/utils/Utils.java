@@ -2,11 +2,13 @@ package com.bakery.server.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.Query;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -86,5 +88,12 @@ public class Utils {
         }
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
         return sdf.parse(date);
+    }
+
+    public static void setPage(Query query, Pageable pageable) {
+        if (pageable != null) {
+            query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+            query.setMaxResults(pageable.getPageSize());
+        }
     }
 }
