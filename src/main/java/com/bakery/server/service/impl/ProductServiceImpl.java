@@ -109,7 +109,9 @@ public class ProductServiceImpl implements ProductService {
         List<FileUploadEntity> fileUploadEntities = modelMapper.map(request.getImageUploads(), fileUploadEntitiesType);
         Long referenceId = entity.getId();
         fileUploadEntities.forEach(e -> e.setReferenceId(referenceId));
-        fileUploadRepository.saveAll(fileUploadEntities);
+        if (!CollectionUtils.isEmpty(fileUploadEntities)) {
+            fileUploadRepository.saveAll(fileUploadEntities);
+        }
 
         if (!CollectionUtils.isEmpty(request.getProductOptions())) {
             List<ProductOptionEntity> productOptionEntities = productOptionService.updateAll(request.getProductOptions(), entity);
@@ -120,10 +122,11 @@ public class ProductServiceImpl implements ProductService {
         if (!CollectionUtils.isEmpty(idOlds)) {
             List<FileUploadEntity> byReferenceId = fileUploadRepository.findByReferenceId(request.getId());
             if (!CollectionUtils.isEmpty(idOlds)) {
-                byReferenceId = byReferenceId.stream().filter(e -> !idOlds.contains(e.getId())).collect(Collectors.toList());
+                byReferenceId = byReferenceId.stream().filter(e -> idOlds.contains(e.getId())).collect(Collectors.toList());
+                List<FileUploadEntity> deletedFileUploadEntity = byReferenceId.stream().filter(e -> !idOlds.contains(e.getId())).collect(Collectors.toList());
                 if (!CollectionUtils.isEmpty(idOlds)) {
-                    byReferenceId.forEach(e -> e.setDeleted(1));
-                    fileUploadRepository.saveAll(byReferenceId);
+                    deletedFileUploadEntity.forEach(e -> e.setDeleted(1));
+                    fileUploadRepository.saveAll(deletedFileUploadEntity);
                 }
             }
         }
