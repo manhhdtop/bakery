@@ -13,11 +13,7 @@ public interface RoleService {
 
     ApiBaseResponse findByName(String keyword, Pageable pageable);
 
-    ApiBaseResponse findByNameNotHidden(String keyword, Pageable pageable);
-
     ApiBaseResponse findByStatus(Integer status);
-
-    ApiBaseResponse findAllStatusNotHidden(Pageable pageable);
 
     ApiBaseResponse save(RoleCreateDto roleCreateDto);
 

@@ -17,8 +17,7 @@ public class ProductResponse {
     private String description;
     private Long price;
     private List<String> images;
-    private Long categoryId;
-    private String categoryName;
+    private CategoryResponse category;
 
     public ProductResponse(Long id, String name, String slug, String description, Long price, String images, Long categoryId, String categoryName) {
         this.id = id;
@@ -27,7 +26,6 @@ public class ProductResponse {
         this.description = description;
         this.price = price;
         this.images = Arrays.asList(images.split(","));
-        this.categoryId = categoryId;
-        this.categoryName = categoryName;
+        this.category = new CategoryResponse(categoryId, categoryName);
     }
 }

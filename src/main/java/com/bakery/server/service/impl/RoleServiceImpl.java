@@ -1,6 +1,5 @@
 package com.bakery.server.service.impl;
 
-import com.bakery.server.constant.Status;
 import com.bakery.server.entity.ActionEntity;
 import com.bakery.server.entity.RoleEntity;
 import com.bakery.server.model.request.RoleCreateDto;
@@ -34,11 +33,6 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public ApiBaseResponse findByName(String keyword, Pageable pageable) {
         return ApiBaseResponse.success(roleRepository.findByName(keyword, pageable));
-    }
-
-    @Override
-    public ApiBaseResponse findByNameNotHidden(String keyword, Pageable pageable) {
-        return ApiBaseResponse.success(roleRepository.findByNameContainingAndStatusIsNot(keyword, Status.ADMINISTRATOR.getStatus(), pageable));
     }
 
     @Override
@@ -81,10 +75,5 @@ public class RoleServiceImpl implements RoleService {
             roleOld.setDeleted(1);
             roleRepository.save(roleOld);
         }
-    }
-
-    @Override
-    public ApiBaseResponse findAllStatusNotHidden(Pageable pageable) {
-        return ApiBaseResponse.success(roleRepository.findByStatusIsNot(Status.ADMINISTRATOR.getStatus(), pageable));
     }
 }

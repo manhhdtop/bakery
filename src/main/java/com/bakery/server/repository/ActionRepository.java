@@ -13,13 +13,8 @@ import java.util.List;
 public interface ActionRepository extends BaseRepository<ActionEntity, Long> {
     ActionEntity findByCode(String code);
 
-    Page<ActionEntity> findByStatusIsNot(Integer status, Pageable pageable);
-
     @Query("SELECT a FROM ActionEntity a WHERE a.code LIKE '%:keyword%' OR a.name LIKE '%:keyword%'")
     Page<ActionEntity> findByKeyword(String keyword, Pageable pageable);
-
-    @Query("SELECT a FROM ActionEntity a WHERE a.status<>:status AND (a.code LIKE '%:keyword%' OR a.name LIKE '%:keyword%')")
-    Page<ActionEntity> findByKeywordNotHidden(String keyword, Integer status, Pageable pageable);
 
     List<ActionEntity> findByStatus(Integer status);
 }

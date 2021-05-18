@@ -7,6 +7,8 @@ import com.bakery.server.model.request.AddProductRequest;
 import com.bakery.server.model.request.ProductRequest;
 import com.bakery.server.model.request.UpdateProductRequest;
 import com.bakery.server.model.response.ApiBaseResponse;
+import com.bakery.server.model.response.CategoryResponse;
+import com.bakery.server.model.response.ProductResponse;
 import com.bakery.server.model.response.UploadFileResponse;
 import com.bakery.server.repository.CategoryRepository;
 import com.bakery.server.repository.FileUploadRepository;
@@ -15,12 +17,16 @@ import com.bakery.server.service.ProductService;
 import com.bakery.server.utils.AssertUtil;
 import com.bakery.server.utils.Utils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -40,24 +46,24 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ApiBaseResponse findAll(Pageable pageable) {
-        return ApiBaseResponse.success(productRepository.findAll(pageable));
+        return ApiBaseResponse.success(convertPage(productRepository.findAll(pageable)));
     }
 
     @Override
     public ApiBaseResponse findByName(String name, Pageable pageable) {
-        return ApiBaseResponse.success(productRepository.findByName(name, pageable));
+        return ApiBaseResponse.success(convertPage(productRepository.findByName(name, pageable)));
     }
 
     @Override
     public ApiBaseResponse findByCategory(Long categoryId, Pageable pageable) {
-        return ApiBaseResponse.success(productRepository.findByCategory(categoryId, pageable));
+        return ApiBaseResponse.success(convertPage(productRepository.findByCategory(categoryId, pageable)));
     }
 
     @Override
     public ApiBaseResponse findById(Long id) {
         ProductEntity product = productRepository.findById(id).orElse(null);
         AssertUtil.notNull(product, "product.not_found");
-        return ApiBaseResponse.success(product);
+        return ApiBaseResponse.success(convert(product));
     }
 
     @Override
@@ -79,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
         fileUploadRepository.saveAll(fileUploadEntities);
         entity.setImages(fileUploadEntities);
         entity = productRepository.save(entity);
-        return ApiBaseResponse.success(entity);
+        return ApiBaseResponse.success(convert(entity));
     }
 
     @Override
@@ -113,7 +119,7 @@ public class ProductServiceImpl implements ProductService {
         entity.setImages(fileUploadEntities);
 
         entity = productRepository.save(entity);
-        return ApiBaseResponse.success(entity);
+        return ApiBaseResponse.success(convert(entity));
     }
 
     @Override
@@ -140,5 +146,26 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ApiBaseResponse findBySlug(String slug) {
         return ApiBaseResponse.success(productRepository.findBySlug(slug));
+    }
+
+    private ProductResponse convert(ProductEntity productEntity) {
+        if (productEntity == null) {
+            return null;
+        }
+        return modelMapper.map(productEntity, ProductResponse.class);
+    }
+
+    private List<ProductResponse> convertList(List<ProductEntity> productEntities) {
+        if (CollectionUtils.isEmpty(productEntities)) {
+            return new ArrayList<>();
+        }
+        Type type = new TypeToken<List<ProductResponse>>() {
+        }.getType();
+        return modelMapper.map(productEntities, type);
+    }
+
+    private Page<ProductResponse> convertPage(Page<ProductEntity> page) {
+        List<ProductEntity> productEntities = page.getContent();
+        return new PageImpl<>(convertList(productEntities), page.getPageable(), page.getTotalElements());
     }
 }

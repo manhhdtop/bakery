@@ -4,10 +4,6 @@ import com.bakery.server.exception.UnauthorizedException;
 import com.bakery.server.model.response.UserResponse;
 import com.google.gson.Gson;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoder;
-import io.jsonwebtoken.io.DecodingException;
-import io.jsonwebtoken.io.Encoder;
-import io.jsonwebtoken.io.EncodingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -19,7 +15,6 @@ import org.springframework.stereotype.Component;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
 
 @Component
@@ -28,6 +23,8 @@ import java.util.Date;
 public class JwtTokenUtil {
     private static final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
+    @Autowired
+    private Gson gson;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -43,7 +40,7 @@ public class JwtTokenUtil {
 
         return Jwts.builder()
                 .setId(String.valueOf(userResponse.getId()))
-                .setSubject(new Gson().toJson(userResponse, UserResponse.class))
+                .setSubject(gson.toJson(userResponse, UserResponse.class))
                 .setIssuer(jwtIssuer)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpired)) // 1 week

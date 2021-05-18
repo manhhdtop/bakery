@@ -1,6 +1,10 @@
 package com.bakery.server.config;
 
+import com.bakery.server.entity.*;
 import com.bakery.server.entity.base.AuditModel;
+import com.bakery.server.utils.GraphAdapterBuilder;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.convention.MatchingStrategies;
@@ -66,5 +70,16 @@ public class WebSecurity implements WebMvcConfigurer {
 //        };
 //        modelMapper.addMappings(skipCreatedDatesMap);
         return modelMapper;
+    }
+
+    @Bean
+    public Gson gson() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        new GraphAdapterBuilder().addType(UserEntity.class).registerOn(gsonBuilder);
+        new GraphAdapterBuilder().addType(CategoryEntity.class).registerOn(gsonBuilder);
+        new GraphAdapterBuilder().addType(ProductEntity.class).registerOn(gsonBuilder);
+        new GraphAdapterBuilder().addType(OptionTypeEntity.class).registerOn(gsonBuilder);
+        new GraphAdapterBuilder().addType(ProductOptionEntity.class).registerOn(gsonBuilder);
+        return gsonBuilder.create();
     }
 }

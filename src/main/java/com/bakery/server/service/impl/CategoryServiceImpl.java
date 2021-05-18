@@ -7,17 +7,23 @@ import com.bakery.server.model.request.AddCategoryRequest;
 import com.bakery.server.model.request.UpdateCategoryRequest;
 import com.bakery.server.model.response.ApiBaseResponse;
 import com.bakery.server.model.response.CategoryResponse;
+import com.bakery.server.model.response.MenuCategoryResponse;
 import com.bakery.server.repository.CategoryRepository;
 import com.bakery.server.repository.ProductRepository;
 import com.bakery.server.service.CategoryService;
 import com.bakery.server.utils.AssertUtil;
 import com.bakery.server.utils.Utils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,17 +37,17 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ApiBaseResponse findAll(Pageable pageable) {
-        return ApiBaseResponse.success(categoryRepository.findAll(pageable));
+        return ApiBaseResponse.success(convertPage(categoryRepository.findAll(pageable)));
     }
 
     @Override
     public ApiBaseResponse findById(Long id) {
-        return ApiBaseResponse.success(categoryRepository.findById(id));
+        return ApiBaseResponse.success(convert(categoryRepository.findById(id).orElse(null)));
     }
 
     @Override
     public ApiBaseResponse findByName(String name, Pageable pageable) {
-        return ApiBaseResponse.success(categoryRepository.findByNameContaining(name.trim(), pageable));
+        return ApiBaseResponse.success(convertPage(categoryRepository.findByNameContaining(name.trim(), pageable)));
     }
 
     @Override
@@ -55,12 +61,12 @@ public class CategoryServiceImpl implements CategoryService {
         CategoryEntity entity = modelMapper.map(request, CategoryEntity.class);
         entity.setParent(parent);
         entity = categoryRepository.save(entity);
-        return ApiBaseResponse.success(entity);
+        return ApiBaseResponse.success(convert(entity));
     }
 
     @Override
     public ApiBaseResponse findListParent() {
-        return ApiBaseResponse.success(categoryRepository.findByParentIdIsNull());
+        return ApiBaseResponse.success(convertList(categoryRepository.findByParentIdIsNull()));
     }
 
     @Override
@@ -76,7 +82,7 @@ public class CategoryServiceImpl implements CategoryService {
         modelMapper.map(request, entity);
         entity.setParent(parent);
         entity = categoryRepository.save(entity);
-        return ApiBaseResponse.success(entity);
+        return ApiBaseResponse.success(convert(entity));
     }
 
     @Override
@@ -96,7 +102,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ApiBaseResponse findListActive() {
-        return ApiBaseResponse.success(categoryRepository.findByStatus(Status.ACTIVE.getStatus()));
+        List<CategoryEntity> categories = categoryRepository.findByStatus(Status.ACTIVE.getStatus());
+        return ApiBaseResponse.success(convertList(categories));
     }
 
     @Override
@@ -110,11 +117,34 @@ public class CategoryServiceImpl implements CategoryService {
         CategoryEntity categoryEntity = categoryRepository.findBySlug(slug.trim().toLowerCase());
         AssertUtil.notNull(categoryEntity, "category.not_found");
         AssertUtil.isTrue(categoryEntity.getStatus().equals(Status.ACTIVE.getStatus()), "category.not_found");
-        return ApiBaseResponse.success(CategoryResponse.of(categoryEntity));
+        return ApiBaseResponse.success(convert(categoryEntity));
     }
 
     @Override
     public ApiBaseResponse getMenuCategories() {
-        return ApiBaseResponse.success(categoryRepository.getMenuCategories());
+        Type type = new TypeToken<List<MenuCategoryResponse>>() {
+        }.getType();
+        return ApiBaseResponse.success(modelMapper.map(categoryRepository.getMenuCategories(), type));
+    }
+
+    private CategoryResponse convert(CategoryEntity categoryEntity) {
+        if (categoryEntity == null) {
+            return null;
+        }
+        return modelMapper.map(categoryEntity, CategoryResponse.class);
+    }
+
+    private List<CategoryResponse> convertList(List<CategoryEntity> categoryEntities) {
+        if (CollectionUtils.isEmpty(categoryEntities)) {
+            return new ArrayList<>();
+        }
+        Type type = new TypeToken<List<CategoryResponse>>() {
+        }.getType();
+        return modelMapper.map(categoryEntities, type);
+    }
+
+    private Page<CategoryResponse> convertPage(Page<CategoryEntity> page) {
+        List<CategoryEntity> categoryEntities = page.getContent();
+        return new PageImpl<>(convertList(categoryEntities), page.getPageable(), page.getTotalElements());
     }
 }

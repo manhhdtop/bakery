@@ -16,17 +16,8 @@ public class CategoryResponse {
     private Integer status;
     private CategoryResponse parent;
 
-    public static CategoryResponse of(CategoryEntity entity) {
-        CategoryResponse response = new CategoryResponse();
-        response.id = entity.getId();
-        response.name = entity.getName();
-        response.slug = entity.getSlug();
-        response.description = entity.getDescription();
-        response.status = entity.getStatus();
-        if (entity.getParent() != null) {
-            response.parent = CategoryResponse.of(entity.getParent());
-        }
-
-        return response;
+    public CategoryResponse(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 }
