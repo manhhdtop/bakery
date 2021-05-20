@@ -1,8 +1,8 @@
 package com.bakery.server.service.impl;
 
 import com.bakery.server.entity.OptionTypeEntity;
-import com.bakery.server.model.request.OptionCreateDto;
-import com.bakery.server.model.request.OptionUpdateDto;
+import com.bakery.server.model.request.OptionTypeCreateDto;
+import com.bakery.server.model.request.OptionTypeUpdateDto;
 import com.bakery.server.model.response.ApiBaseResponse;
 import com.bakery.server.model.response.OptionTypeResponse;
 import com.bakery.server.repository.OptionTypeRepository;
@@ -39,14 +39,14 @@ public class OptionTypeServiceImpl implements OptionTypeService {
     }
 
     @Override
-    public ApiBaseResponse save(OptionCreateDto actionCreateDto) {
+    public ApiBaseResponse save(OptionTypeCreateDto actionCreateDto) {
         OptionTypeEntity productOptionEntity = modelMapper.map(actionCreateDto, OptionTypeEntity.class);
         productOptionEntity = optionTypeRepository.save(productOptionEntity);
         return ApiBaseResponse.success(convert(productOptionEntity));
     }
 
     @Override
-    public ApiBaseResponse update(OptionUpdateDto actionUpdateDto) {
+    public ApiBaseResponse update(OptionTypeUpdateDto actionUpdateDto) {
         OptionTypeEntity actionOld = optionTypeRepository.findById(actionUpdateDto.getId()).orElse(null);
         AssertUtil.notNull(actionOld, "action.not_exist");
 

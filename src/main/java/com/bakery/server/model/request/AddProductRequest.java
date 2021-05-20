@@ -23,6 +23,7 @@ public class AddProductRequest {
     private Long categoryId;
     @NotNull
     private Integer status;
+    private List<ProductOptionCreateDto> productOptions;
 
     public void validData() {
         name = name.trim();

@@ -13,7 +13,6 @@ import javax.persistence.*;
 
 @Data
 @EntityListeners(AuditingEntityListener.class)
-@EqualsAndHashCode(callSuper = true)
 @MappedSuperclass
 public class AuditModel extends BaseModel {
     @Column(name = "created_date", nullable = false, updatable = false)

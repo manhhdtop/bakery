@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class OptionUpdateDto {
+public class OptionTypeUpdateDto {
     @NotNull
     private Long id;
     @NotBlank

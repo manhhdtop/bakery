@@ -1,8 +1,8 @@
 package com.bakery.server.controller.admin;
 
 import com.bakery.server.constant.Status;
-import com.bakery.server.model.request.OptionCreateDto;
-import com.bakery.server.model.request.OptionUpdateDto;
+import com.bakery.server.model.request.OptionTypeCreateDto;
+import com.bakery.server.model.request.OptionTypeUpdateDto;
 import com.bakery.server.model.response.ApiBaseResponse;
 import com.bakery.server.service.OptionTypeService;
 import org.apache.commons.lang3.StringUtils;
@@ -40,13 +40,13 @@ public class OptionTypeController {
     }
 
     @PutMapping
-    public ResponseEntity<?> save(@Valid @RequestBody OptionCreateDto optionCreateDto) {
-        return ResponseEntity.ok(optionTypeService.save(optionCreateDto));
+    public ResponseEntity<?> save(@Valid @RequestBody OptionTypeCreateDto optionTypeCreateDto) {
+        return ResponseEntity.ok(optionTypeService.save(optionTypeCreateDto));
     }
 
     @PostMapping
-    public ResponseEntity<?> update(@Valid @RequestBody OptionUpdateDto optionUpdateDto) {
-        return ResponseEntity.ok(optionTypeService.update(optionUpdateDto));
+    public ResponseEntity<?> update(@Valid @RequestBody OptionTypeUpdateDto optionTypeUpdateDto) {
+        return ResponseEntity.ok(optionTypeService.update(optionTypeUpdateDto));
     }
 
     @DeleteMapping("/{id}")

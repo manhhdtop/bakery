@@ -1,7 +1,5 @@
 package com.bakery.server.constant;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 import java.util.Arrays;
 
 public enum RoleCode {

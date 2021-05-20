@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Data
@@ -16,8 +17,10 @@ public class ProductResponse {
     private String slug;
     private String description;
     private Long price;
-    private List<String> images;
+    private List<UploadFileResponse> images;
+    private List<OptionResponse> options;
     private CategoryResponse category;
+    private Integer status;
 
     public ProductResponse(Long id, String name, String slug, String description, Long price, String images, Long categoryId, String categoryName) {
         this.id = id;
@@ -25,7 +28,7 @@ public class ProductResponse {
         this.slug = slug;
         this.description = description;
         this.price = price;
-        this.images = Arrays.asList(images.split(","));
+        this.images = Arrays.stream(images.split(",")).map(UploadFileResponse::of).collect(Collectors.toList());
         this.category = new CategoryResponse(categoryId, categoryName);
     }
 }

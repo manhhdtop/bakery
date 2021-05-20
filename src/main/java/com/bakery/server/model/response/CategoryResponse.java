@@ -1,6 +1,5 @@
 package com.bakery.server.model.response;
 
-import com.bakery.server.entity.CategoryEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

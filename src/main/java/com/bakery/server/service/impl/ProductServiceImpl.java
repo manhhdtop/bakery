@@ -3,16 +3,17 @@ package com.bakery.server.service.impl;
 import com.bakery.server.entity.CategoryEntity;
 import com.bakery.server.entity.FileUploadEntity;
 import com.bakery.server.entity.ProductEntity;
+import com.bakery.server.entity.ProductOptionEntity;
 import com.bakery.server.model.request.AddProductRequest;
 import com.bakery.server.model.request.ProductRequest;
 import com.bakery.server.model.request.UpdateProductRequest;
 import com.bakery.server.model.response.ApiBaseResponse;
-import com.bakery.server.model.response.CategoryResponse;
 import com.bakery.server.model.response.ProductResponse;
 import com.bakery.server.model.response.UploadFileResponse;
 import com.bakery.server.repository.CategoryRepository;
 import com.bakery.server.repository.FileUploadRepository;
 import com.bakery.server.repository.ProductRepository;
+import com.bakery.server.service.ProductOptionService;
 import com.bakery.server.service.ProductService;
 import com.bakery.server.utils.AssertUtil;
 import com.bakery.server.utils.Utils;
@@ -41,6 +42,8 @@ public class ProductServiceImpl implements ProductService {
     private FileUploadRepository fileUploadRepository;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private ProductOptionService productOptionService;
     @Autowired
     private ProductRepository productRepository;
 
@@ -73,15 +76,19 @@ public class ProductServiceImpl implements ProductService {
         AssertUtil.notNull(categoryEntity, "category.not_found");
         ProductEntity entity = modelMapper.map(request, ProductEntity.class);
         entity.setCategory(categoryEntity);
-        List<FileUploadEntity> fileUploadEntities = new ArrayList<>();
 
         entity = productRepository.save(entity);
-        ProductEntity finalEntity = entity;
-        request.getImageUploads().forEach(e -> {
-            FileUploadEntity fileUploadEntity = modelMapper.map(e, FileUploadEntity.class);
-            fileUploadEntity.setReferenceId(finalEntity.getId());
-            fileUploadEntities.add(fileUploadEntity);
-        });
+
+        if (!CollectionUtils.isEmpty(request.getProductOptions())) {
+            List<ProductOptionEntity> productOptionEntities = productOptionService.saveAll(request.getProductOptions(), entity);
+            entity.setOptions(productOptionEntities);
+        }
+
+        Type fileUploadEntitiesType = new TypeToken<List<FileUploadEntity>>() {
+        }.getType();
+        List<FileUploadEntity> fileUploadEntities = modelMapper.map(request.getImageUploads(), fileUploadEntitiesType);
+        Long referenceId = entity.getId();
+        fileUploadEntities.forEach(e -> e.setReferenceId(referenceId));
         fileUploadRepository.saveAll(fileUploadEntities);
         entity.setImages(fileUploadEntities);
         entity = productRepository.save(entity);
@@ -97,14 +104,18 @@ public class ProductServiceImpl implements ProductService {
         AssertUtil.notNull(categoryEntity, "category.not_found");
         modelMapper.map(request, entity);
         entity.setCategory(categoryEntity);
-        List<FileUploadEntity> fileUploadEntities = new ArrayList<>();
-        ProductEntity finalEntity = entity;
-        request.getImageUploads().stream().filter(e -> e.getId() == null).forEach(e -> {
-            FileUploadEntity fileUploadEntity = modelMapper.map(e, FileUploadEntity.class);
-            fileUploadEntity.setReferenceId(finalEntity.getId());
-            fileUploadEntities.add(fileUploadEntity);
-        });
+        Type fileUploadEntitiesType = new TypeToken<List<FileUploadEntity>>() {
+        }.getType();
+        List<FileUploadEntity> fileUploadEntities = modelMapper.map(request.getImageUploads(), fileUploadEntitiesType);
+        Long referenceId = entity.getId();
+        fileUploadEntities.forEach(e -> e.setReferenceId(referenceId));
         fileUploadRepository.saveAll(fileUploadEntities);
+
+        if (!CollectionUtils.isEmpty(request.getProductOptions())) {
+            List<ProductOptionEntity> productOptionEntities = productOptionService.updateAll(request.getProductOptions(), entity);
+            entity.setOptions(productOptionEntities);
+        }
+
         List<Long> idOlds = request.getImageUploads().stream().map(UploadFileResponse::getId).filter(Objects::nonNull).collect(Collectors.toList());
         if (!CollectionUtils.isEmpty(idOlds)) {
             List<FileUploadEntity> byReferenceId = fileUploadRepository.findByReferenceId(request.getId());

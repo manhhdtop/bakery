@@ -1,6 +1,5 @@
 package com.bakery.server.entity;
 
-import com.bakery.server.constant.Status;
 import com.bakery.server.entity.base.AuditModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;

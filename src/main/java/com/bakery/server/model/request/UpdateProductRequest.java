@@ -25,6 +25,7 @@ public class UpdateProductRequest {
     private Long categoryId;
     @NotNull
     private Integer status;
+    private List<ProductOptionUpdateDto> productOptions;
 
     public void validData() {
         name = name.trim();

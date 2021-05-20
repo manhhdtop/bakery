@@ -1,6 +1,5 @@
 package com.bakery.server.config;
 
-import com.bakery.server.constant.UserStatus;
 import com.bakery.server.entity.RoleEntity;
 import com.bakery.server.entity.UserEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;

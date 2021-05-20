@@ -19,8 +19,6 @@ import javax.persistence.*;
 public class ProductOptionEntity extends AuditModel {
     @Column(name = "product_id")
     private Long productId;
-    @Column(name = "name")
-    private String name;
     @Column(name = "value")
     private String value;
     @ManyToOne
@@ -28,6 +26,4 @@ public class ProductOptionEntity extends AuditModel {
     private OptionTypeEntity optionType;
     @Column(name = "more_info")
     private String moreInfo;
-    @Column(name = "status")
-    private Integer status;
 }
