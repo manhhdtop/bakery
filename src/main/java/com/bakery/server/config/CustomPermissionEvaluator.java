@@ -34,7 +34,10 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
 
     private boolean hasPrivilege(Authentication auth, String targetType, String permission) {
         UserPrincipal principal = (UserPrincipal) auth.getPrincipal();
-        List<ActionEntity> actions = principal.getRoles().stream().map(e -> new ArrayList<>(e.getActions())).flatMap(Collection::stream).collect(Collectors.toList());
+        List<ActionEntity> actions = principal.getRoles().stream()
+                .map(e -> new ArrayList<>(e.getActions())).flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
 
         Map<String, ActionEntity> actionMap = actions.stream().collect(Collectors.toMap(ActionEntity::getCode, Function.identity()));
 

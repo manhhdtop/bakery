@@ -1,10 +1,12 @@
 package com.bakery.server.service.impl;
 
 import com.bakery.server.constant.UserStatus;
+import com.bakery.server.entity.ActionEntity;
 import com.bakery.server.entity.RoleEntity;
 import com.bakery.server.entity.UserEntity;
 import com.bakery.server.model.request.UserCreateDto;
 import com.bakery.server.model.request.UserUpdateDto;
+import com.bakery.server.model.response.ActionResponse;
 import com.bakery.server.model.response.ApiBaseResponse;
 import com.bakery.server.model.response.UserResponse;
 import com.bakery.server.repository.RoleRepository;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -67,7 +70,7 @@ public class UserServiceImpl implements UserService {
         }
 
         UserEntity user = userRepository.save(userEntity);
-        return ApiBaseResponse.success(modelMapper.map(user, UserResponse.class));
+        return ApiBaseResponse.success(convert(user));
     }
 
     public ApiBaseResponse update(UserUpdateDto userUpdateDto) {
@@ -91,7 +94,7 @@ public class UserServiceImpl implements UserService {
         userOld.setRoles(roles);
 
         userOld = userRepository.save(userOld);
-        return ApiBaseResponse.success(modelMapper.map(userOld, UserResponse.class));
+        return ApiBaseResponse.success(convert(userOld));
     }
 
     @Override
@@ -116,6 +119,22 @@ public class UserServiceImpl implements UserService {
         if (userUpdateDto.getStatus() == null) {
             userUpdateDto.setStatus(UserStatus.DEACTIVE.getStatus());
         }
+    }
+
+    private UserResponse convert(UserEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        return modelMapper.map(entity, UserResponse.class);
+    }
+
+    private List<UserResponse> convertList(List<UserEntity> entities) {
+        if (CollectionUtils.isEmpty(entities)) {
+            return new ArrayList<>();
+        }
+        Type type = new TypeToken<List<UserResponse>>() {
+        }.getType();
+        return modelMapper.map(entities, type);
     }
 
     private Page<UserResponse> convertPage(Page<UserEntity> page, Pageable pageable) {
