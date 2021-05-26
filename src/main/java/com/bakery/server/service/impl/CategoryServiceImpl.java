@@ -66,7 +66,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ApiBaseResponse findListParent() {
-        return ApiBaseResponse.success(convertList(categoryRepository.findByParentIdIsNull()));
+        return ApiBaseResponse.success(convertList(categoryRepository.findListParent()));
     }
 
     @Override
@@ -109,6 +109,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ApiBaseResponse createSlug(String categoryName) {
         String slug = Utils.createSlug(categoryName);
+        CategoryEntity entityBySlug = categoryRepository.findBySlugLike(slug);
+        if (entityBySlug != null) {
+            String lastSlug = entityBySlug.getSlug();
+            slug = Utils.createNewSlug(slug, lastSlug);
+        }
         return ApiBaseResponse.success(slug);
     }
 

@@ -63,8 +63,27 @@ public class Utils {
 
     public static String createSlug(String name) {
         String slug = removeAccent(name, true);
-        slug = slug.replaceAll("\\s+", "-");
-        slug += "-" + Utils.formatDate(new Date(), "yyyyMMddhhmmssSSS");
+        slug = slug.trim().replaceAll("\\s+", "-").replaceAll("#", "%23");
+        return slug;
+    }
+
+    public static String createNewSlug(String slug, String lastSlug) {
+        String[] arrSplit = lastSlug.trim().split("-");
+        String suffix;
+        if (arrSplit.length > 1) {
+            suffix = arrSplit[arrSplit.length - 1];
+            if (suffix.startsWith("#")) {
+                suffix = suffix.substring(1);
+            } else {
+                suffix = "0";
+            }
+        } else {
+            suffix = "0";
+        }
+        int numberSuffix = Integer.parseInt(suffix);
+        numberSuffix++;
+
+        slug = String.format("%s-#%02d", slug, numberSuffix);
         return slug;
     }
 

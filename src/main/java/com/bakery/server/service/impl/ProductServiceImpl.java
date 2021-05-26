@@ -149,6 +149,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ApiBaseResponse createSlug(String productName) {
         String slug = Utils.createSlug(productName);
+        ProductEntity entityBySlug = productRepository.findBySlugLike(slug);
+        if (entityBySlug != null) {
+            String lastSlug = entityBySlug.getSlug();
+            slug = Utils.createNewSlug(slug, lastSlug);
+        }
         return ApiBaseResponse.success(slug);
     }
 
