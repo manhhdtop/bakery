@@ -65,6 +65,8 @@ public class ProductRepositoryCustomerImpl implements ProductRepositoryCustomer 
             sb.append("SELECT COUNT(p.id) \n");
         } else {
             sb.append("SELECT p.id, p.name, p.slug, p.description, p.price, c.id categoryId, c.name categoryName, \n");
+            sb.append("    (SELECT GROUP_CONCAT(po.id, '|', po.value, '|', po.option_type, '|',(SELECT ot.name FROM option_type ot WHERE po.option_type=ot.id)) \n");
+            sb.append("        FROM product_option po WHERE p.id=po.product_id AND po.deleted=0) options, \n");
             sb.append("    (SELECT GROUP_CONCAT(f.uri) FROM file_upload f WHERE f.reference_id=p.id) images \n");
         }
         sb.append("FROM product p, category c \n");
