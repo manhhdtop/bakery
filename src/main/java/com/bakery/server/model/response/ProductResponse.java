@@ -48,10 +48,7 @@ public class ProductResponse {
                 long optionTypeId = Long.parseLong(field[2]);
                 optionType = map.getOrDefault(optionTypeId, null);
                 if (optionType == null) {
-                    optionType = new OptionTypeResponse();
-                    optionType.setId(optionTypeId);
-                    optionType.setName(field[3]);
-                    optionType.setOptions(new ArrayList<>());
+                    optionType = new OptionTypeResponse(optionTypeId, field[3]);
                     map.put(optionType.getId(), optionType);
                 }
                 optionType.getOptions().add(productOption);
