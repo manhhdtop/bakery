@@ -9,5 +9,6 @@ public class ProductOptionResponse {
     private Long productId;
     private String value;
     private OptionTypeResponse optionType;
+    private Long price;
     private String moreInfo;
 }

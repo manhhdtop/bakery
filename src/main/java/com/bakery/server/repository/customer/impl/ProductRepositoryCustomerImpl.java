@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -46,6 +47,23 @@ public class ProductRepositoryCustomerImpl implements ProductRepositoryCustomer 
         return new PageImpl<>(query.getResultList(), pageable, count);
     }
 
+    @Override
+    public ProductResponse findBySlug(String slug) {
+        ProductRequest request = new ProductRequest();
+        request.setSlug(slug);
+        Map<String, Object> paramsMap = new HashMap<>();
+        String sql = buildHomeProductSql(request, paramsMap, Constant.SqlType.LIST);
+        Query query = entityManager.createNativeQuery(sql, PRODUCT_RESPONSE);
+        if (!CollectionUtils.isEmpty(paramsMap)) {
+            paramsMap.forEach(query::setParameter);
+        }
+        try {
+            return (ProductResponse) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
     private Integer countHomeProduct(ProductRequest request) {
         Map<String, Object> paramsMap = new HashMap<>();
         String sql = buildHomeProductSql(request, paramsMap, Constant.SqlType.COUNTING);
@@ -65,7 +83,7 @@ public class ProductRepositoryCustomerImpl implements ProductRepositoryCustomer 
             sb.append("SELECT COUNT(p.id) \n");
         } else {
             sb.append("SELECT p.id, p.name, p.slug, p.description, p.price, c.id categoryId, c.name categoryName, \n");
-            sb.append("    (SELECT GROUP_CONCAT(po.id, '|', po.value, '|', po.option_type, '|',(SELECT ot.name FROM option_type ot WHERE po.option_type=ot.id)) \n");
+            sb.append("    (SELECT GROUP_CONCAT(po.id, '|', po.value, '|', IFNULL(po.price, ''), '|', po.option_type, '|',(SELECT ot.name FROM option_type ot WHERE po.option_type=ot.id)) \n");
             sb.append("        FROM product_option po WHERE p.id=po.product_id AND po.deleted=0) options, \n");
             sb.append("    (SELECT GROUP_CONCAT(f.uri) FROM file_upload f WHERE f.reference_id=p.id) images \n");
         }
@@ -75,6 +93,10 @@ public class ProductRepositoryCustomerImpl implements ProductRepositoryCustomer 
         if (StringUtils.isNotBlank(request.getName())) {
             paramsMap.put("productName", request.getName());
             sb.append("    AND p.name LIKE CONCAT('%', :productName, '%') \n");
+        }
+        if (StringUtils.isNotBlank(request.getSlug())) {
+            paramsMap.put("slug", request.getSlug());
+            sb.append("    AND p.slug=:slug \n");
         }
         if (request.getCategoryId() != null) {
             paramsMap.put("categoryId", request.getCategoryId());

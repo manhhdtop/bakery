@@ -6,4 +6,6 @@ import org.springframework.data.domain.Page;
 
 public interface ProductRepositoryCustomer {
     Page<ProductResponse> getHomeProduct(ProductRequest request);
+
+    ProductResponse findBySlug(String slug);
 }

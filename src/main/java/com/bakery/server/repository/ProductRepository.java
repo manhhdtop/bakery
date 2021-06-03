@@ -18,8 +18,6 @@ public interface ProductRepository extends ProductRepositoryCustomer, JpaReposit
     @Query("SELECT p FROM ProductEntity p WHERE p.category.id=:categoryId")
     Page<ProductEntity> findByCategory(Long categoryId, Pageable pageable);
 
-    ProductEntity findBySlug(String slug);
-
     @Query(value = "SELECT * FROM category c WHERE c.slug  REGEXP concat('^', :slug, '(?:-#[0-9]+)?$') ORDER BY c.slug DESC", nativeQuery = true)
     ProductEntity findBySlugLike(String slug);
 }

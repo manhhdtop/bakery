@@ -164,7 +164,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ApiBaseResponse findBySlug(String slug) {
-        return ApiBaseResponse.success(productRepository.findBySlug(slug));
+        ProductResponse response = productRepository.findBySlug(slug);
+        AssertUtil.notNull(response, "product.not_found");
+        return ApiBaseResponse.success(response);
     }
 
     private ProductResponse convert(ProductEntity productEntity) {

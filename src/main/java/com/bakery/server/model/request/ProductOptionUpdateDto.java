@@ -12,5 +12,6 @@ public class ProductOptionUpdateDto {
     @NotBlank
     private String value;
     private OptionTypeUpdateDto optionType;
+    private Long price;
     private String moreInfo;
 }

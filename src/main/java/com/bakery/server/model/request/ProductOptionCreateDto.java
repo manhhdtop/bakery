@@ -13,5 +13,6 @@ public class ProductOptionCreateDto {
     @NotNull
     @Valid
     private OptionTypeUpdateDto optionType;
+    private Long price;
     private String moreInfo;
 }

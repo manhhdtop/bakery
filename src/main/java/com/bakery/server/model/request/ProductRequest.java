@@ -7,6 +7,7 @@ import javax.validation.constraints.Min;
 @Data
 public class ProductRequest {
     private String name;
+    private String slug;
     private Long categoryId;
     private String categoryName;
     @Min(0)

@@ -24,6 +24,8 @@ public class ProductOptionEntity extends AuditModel {
     @ManyToOne
     @JoinColumn(name = "option_type", referencedColumnName = "id")
     private OptionTypeEntity optionType;
+    @Column(name = "price")
+    private Long price;
     @Column(name = "more_info")
     private String moreInfo;
 }

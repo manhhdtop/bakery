@@ -39,16 +39,21 @@ public class ProductResponse {
         if (StringUtils.isNotBlank(optionsString)) {
             String[] arrOption = optionsString.trim().split(",");
             for (String s : arrOption) {
+                int i = 0;
                 String[] field = s.split("\\|");
                 OptionTypeResponse optionType;
                 ProductOptionResponse productOption = new ProductOptionResponse();
-                productOption.setId(Long.parseLong(field[0]));
+                productOption.setId(Long.parseLong(field[i++]));
                 productOption.setProductId(this.getId());
-                productOption.setValue(field[1]);
-                long optionTypeId = Long.parseLong(field[2]);
+                productOption.setValue(field[i++]);
+                String price = field[i++];
+                if (StringUtils.isNotBlank(price)) {
+                    productOption.setPrice(Long.parseLong(price));
+                }
+                long optionTypeId = Long.parseLong(field[i++]);
                 optionType = map.getOrDefault(optionTypeId, null);
                 if (optionType == null) {
-                    optionType = new OptionTypeResponse(optionTypeId, field[3]);
+                    optionType = new OptionTypeResponse(optionTypeId, field[i]);
                     map.put(optionType.getId(), optionType);
                 }
                 optionType.getOptions().add(productOption);
