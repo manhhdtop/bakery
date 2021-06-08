@@ -88,7 +88,7 @@ public class ProductRepositoryCustomerImpl implements ProductRepositoryCustomer 
             sb.append("    (SELECT GROUP_CONCAT(f.uri) FROM file_upload f WHERE f.reference_id=p.id) images \n");
         }
         sb.append("FROM product p, category c \n");
-        sb.append("WHERE p.category_id=c.id \n");
+        sb.append("WHERE p.category_id=c.id AND p.status=1 \n");
 
         if (StringUtils.isNotBlank(request.getName())) {
             paramsMap.put("productName", request.getName());
