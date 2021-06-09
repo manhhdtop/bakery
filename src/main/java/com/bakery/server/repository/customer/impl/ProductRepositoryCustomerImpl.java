@@ -102,6 +102,18 @@ public class ProductRepositoryCustomerImpl implements ProductRepositoryCustomer 
             paramsMap.put("categoryId", request.getCategoryId());
             sb.append("    AND c.id=:categoryId \n");
         }
+        if (!CollectionUtils.isEmpty(request.getCategoryIds())) {
+            paramsMap.put("categoryIds", request.getCategoryIds());
+            sb.append("    AND c.id IN :categoryIds \n");
+        }
+        if (request.getFromPrice() != null) {
+            paramsMap.put("fromPrice", request.getFromPrice());
+            sb.append("    AND p.price>=:fromPrice \n");
+        }
+        if (request.getToPrice() != null) {
+            paramsMap.put("toPrice", request.getToPrice());
+            sb.append("    AND p.price<=:toPrice \n");
+        }
         sb.append("ORDER BY p.created_date DESC");
 
         return sb.toString();

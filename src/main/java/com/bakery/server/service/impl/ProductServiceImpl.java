@@ -159,6 +159,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ApiBaseResponse getHomeProduct(ProductRequest request) {
+        if (request.getFromPrice() != null && request.getToPrice() != null) {
+            AssertUtil.isTrue(request.getToPrice() >= request.getFromPrice(), "product.search.from_price_must_less_than_to_price");
+        }
         return ApiBaseResponse.success(productRepository.getHomeProduct(request));
     }
 
