@@ -50,5 +50,7 @@ spring:
       max-file-size: 5MB
       max-request-size: 20MB
 #
+# Voucher
 #
-#
+voucher:
+  default-length: 8

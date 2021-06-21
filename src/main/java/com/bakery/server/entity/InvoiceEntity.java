@@ -25,11 +25,11 @@ public class InvoiceEntity extends AuditModel {
 
     @Column(name = "invoice_id", nullable = false, unique = true)
     private String invoiceId;
-    @Column(name = "customer-name")
+    @Column(name = "customer_name")
     private String customerName;
-    @Column(name = "customer-email")
+    @Column(name = "customer_email")
     private String customerEmail;
-    @Column(name = "customer-phone")
+    @Column(name = "customer_phone")
     private String customerPhone;
     @Column(name = "province_id")
     private Long provinceId;
@@ -37,8 +37,10 @@ public class InvoiceEntity extends AuditModel {
     private Long districtId;
     @Column(name = "address")
     private String address;
-    @Column(name = "coupon_id")
-    private Long couponId;
+    @Column(name = "voucher_id")
+    private Long voucherId;
+    @Column(name = "status")
+    private Integer status;
     @OneToMany
     private List<ProductEntity> products;
 }

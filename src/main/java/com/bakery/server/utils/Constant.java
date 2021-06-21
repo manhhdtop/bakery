@@ -61,4 +61,9 @@ public interface Constant {
         public static final boolean COUNTING = true;
         public static final boolean LIST = false;
     }
+
+    class VoucherType {
+        public static final Integer AMOUNT = 1;
+        public static final Integer PERCENT = 2;
+    }
 }

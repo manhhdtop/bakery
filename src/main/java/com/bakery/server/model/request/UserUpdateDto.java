@@ -13,7 +13,6 @@ public class UserUpdateDto {
     private Long id;
     @NotBlank
     private String name;
-    @NotBlank
     private String password;
     private String email;
     @NotNull

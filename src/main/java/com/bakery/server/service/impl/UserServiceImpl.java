@@ -78,7 +78,6 @@ public class UserServiceImpl implements UserService {
 
         UserEntity userOld = userRepository.findById(userUpdateDto.getId()).orElse(null);
         AssertUtil.notNull(userOld, "user.update.user_id.not_exist");
-        AssertUtil.isFalse(userOld.getUsername().equals(usernameAdministrator), "user.update.user_id.not_exist");
         String password = null;
         if (StringUtils.isNotBlank(userUpdateDto.getPassword())) {
             userUpdateDto.setPassword(passwordEncoder.encode(userUpdateDto.getPassword().trim()));

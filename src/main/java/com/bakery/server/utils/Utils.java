@@ -11,6 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.Query;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -107,6 +111,20 @@ public class Utils {
         }
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
         return sdf.parse(date);
+    }
+
+    public static LocalDate asLocalDate(Date date) {
+        if (date == null) {
+            return null;
+        }
+        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    public static LocalDateTime asLocalDateTime(Date date) {
+        if (date == null) {
+            return null;
+        }
+        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     public static void setPage(Query query, Pageable pageable) {

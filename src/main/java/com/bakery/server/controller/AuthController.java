@@ -70,7 +70,8 @@ public class AuthController {
         if (jwtTokenUtil.isExpired(token)) {
             throw UnauthorizedException.build();
         }
-        return ResponseEntity.ok().build();
+        UserResponse user = jwtTokenUtil.getUser(token);
+        return ResponseEntity.ok(LoginResponse.of(user, token));
     }
 
     @PostMapping("/refresh-token")
