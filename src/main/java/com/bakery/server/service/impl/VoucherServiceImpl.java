@@ -1,13 +1,16 @@
 package com.bakery.server.service.impl;
 
+import com.bakery.server.constant.Status;
 import com.bakery.server.entity.VoucherEntity;
 import com.bakery.server.model.request.VoucherCreateDto;
 import com.bakery.server.model.request.VoucherUpdateDto;
+import com.bakery.server.model.request.VoucherUpdateStatusDto;
 import com.bakery.server.model.response.ApiBaseResponse;
 import com.bakery.server.model.response.VoucherResponse;
 import com.bakery.server.repository.VoucherRepository;
 import com.bakery.server.service.VoucherService;
 import com.bakery.server.utils.AssertUtil;
+import com.bakery.server.utils.Utils;
 import com.bakery.server.utils.VoucherUtil;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -20,7 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -59,6 +64,7 @@ public class VoucherServiceImpl implements VoucherService {
         VoucherEntity voucherByCode = voucherRepository.findByCode(request.getCode());
         AssertUtil.isNull(voucherByCode, "voucher.code.exist");
         VoucherEntity voucherEntity = modelMapper.map(request, VoucherEntity.class);
+        voucherEntity.setStatus(0);
         voucherEntity = voucherRepository.save(voucherEntity);
         return ApiBaseResponse.success(convert(voucherEntity));
     }
@@ -68,17 +74,19 @@ public class VoucherServiceImpl implements VoucherService {
         request.validate();
         VoucherEntity entity = voucherRepository.findById(request.getId()).orElse(null);
         AssertUtil.notNull(entity, "voucher.notExist");
-        AssertUtil.isTrue(entity.getStatus().equals(1), "voucher.update.status.notValid");
+        AssertUtil.isTrue(entity.getStatus().equals(0), "voucher.update.status.notValid");
         modelMapper.map(request, entity);
         entity = voucherRepository.save(entity);
         return ApiBaseResponse.success(convert(entity));
     }
 
     @Override
-    public void updateStatus(Long id, Integer status) {
-        VoucherEntity voucher = voucherRepository.findById(id).orElse(null);
-        if (voucher != null && !voucher.getStatus().equals(status)) {
-            voucher.setStatus(status);
+    public void updateStatus(VoucherUpdateStatusDto request) {
+        List<Integer> statuses = Arrays.asList(Status.ACTIVE.getStatus(), Status.LOCK.getStatus());
+        AssertUtil.isTrue(statuses.contains(request.getStatus()), "voucher.update.status.notValid");
+        VoucherEntity voucher = voucherRepository.findById(request.getId()).orElse(null);
+        if (voucher != null && !voucher.getStatus().equals(request.getStatus())) {
+            voucher.setStatus(request.getStatus());
             voucherRepository.save(voucher);
         }
     }
@@ -97,14 +105,34 @@ public class VoucherServiceImpl implements VoucherService {
         String code;
         boolean exist = true;
         VoucherEntity voucher;
-        do {
+        code = VoucherUtil.generate(defaultLength);
+        voucher = voucherRepository.findByCode(code);
+        if (voucher == null) {
+            exist = false;
+        }
+        while (exist) {
             code = VoucherUtil.generate(defaultLength);
             voucher = voucherRepository.findByCode(code);
             if (voucher == null) {
                 exist = false;
             }
-        } while (exist);
+        }
         return ApiBaseResponse.success(code);
+    }
+
+    @Override
+    public ApiBaseResponse checkCode(String code) {
+        VoucherEntity voucher = voucherRepository.findByCode(code.trim());
+        AssertUtil.notNull(voucher, "voucher.notExist");
+        AssertUtil.isFalse(voucher.getStatus() == 0, "voucher.notExist");
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startTime = Utils.asLocalDateTime(voucher.getStartDate());
+        LocalDateTime endTime = Utils.asLocalDateTime(voucher.getEndDate());
+        AssertUtil.isTrue(startTime.isBefore(now), "voucher.notExist");
+        AssertUtil.isTrue(endTime.isAfter(now), "voucher.notExist");
+
+        return ApiBaseResponse.success(convert(voucher));
     }
 
     private VoucherResponse convert(VoucherEntity entity) {

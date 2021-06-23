@@ -7,10 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @AllArgsConstructor
@@ -41,6 +38,9 @@ public class InvoiceEntity extends AuditModel {
     private Long voucherId;
     @Column(name = "status")
     private Integer status;
+    @Column(name = "total_amount")
+    private Long totalAmount;
     @OneToMany
-    private List<ProductEntity> products;
+    @JoinColumn(name = "invoice_id", referencedColumnName = "id")
+    private List<InvoiceProductEntity> products;
 }

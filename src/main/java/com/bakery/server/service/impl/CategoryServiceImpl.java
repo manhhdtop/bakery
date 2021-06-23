@@ -3,8 +3,8 @@ package com.bakery.server.service.impl;
 import com.bakery.server.constant.Status;
 import com.bakery.server.entity.CategoryEntity;
 import com.bakery.server.entity.ProductEntity;
-import com.bakery.server.model.request.AddCategoryRequest;
-import com.bakery.server.model.request.UpdateCategoryRequest;
+import com.bakery.server.model.request.CategoryAddRequest;
+import com.bakery.server.model.request.CategoryUpdateRequest;
 import com.bakery.server.model.response.ApiBaseResponse;
 import com.bakery.server.model.response.CategoryResponse;
 import com.bakery.server.model.response.MenuCategoryResponse;
@@ -51,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ApiBaseResponse save(AddCategoryRequest request) {
+    public ApiBaseResponse save(CategoryAddRequest request) {
         request.validData();
         CategoryEntity parent = null;
         if (request.getParentId() != null) {
@@ -70,7 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ApiBaseResponse update(UpdateCategoryRequest request) {
+    public ApiBaseResponse update(CategoryUpdateRequest request) {
         request.validData();
         CategoryEntity entity = categoryRepository.findById(request.getId()).orElse(null);
         AssertUtil.notNull(entity, "category.not_found");

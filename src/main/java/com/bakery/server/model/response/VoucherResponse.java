@@ -13,6 +13,8 @@ public class VoucherResponse {
     private Long value;
     private Long minAmount;
     private Long maxAmount;
+    private Long minRefund;
+    private Long maxRefund;
     private Integer type;
     private Integer quantity;
     private Date startDate;

@@ -2,6 +2,7 @@ package com.bakery.server.service;
 
 import com.bakery.server.model.request.VoucherCreateDto;
 import com.bakery.server.model.request.VoucherUpdateDto;
+import com.bakery.server.model.request.VoucherUpdateStatusDto;
 import com.bakery.server.model.response.ApiBaseResponse;
 import org.springframework.data.domain.Pageable;
 
@@ -18,9 +19,11 @@ public interface VoucherService {
 
     ApiBaseResponse update(VoucherUpdateDto request);
 
-    void updateStatus(Long id, Integer status);
+    void updateStatus(VoucherUpdateStatusDto request);
 
     void delete(Long id);
 
     ApiBaseResponse generateCode();
+
+    ApiBaseResponse checkCode(String code);
 }

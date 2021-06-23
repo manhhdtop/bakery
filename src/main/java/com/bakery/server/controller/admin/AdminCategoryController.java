@@ -1,7 +1,7 @@
 package com.bakery.server.controller.admin;
 
-import com.bakery.server.model.request.AddCategoryRequest;
-import com.bakery.server.model.request.UpdateCategoryRequest;
+import com.bakery.server.model.request.CategoryAddRequest;
+import com.bakery.server.model.request.CategoryUpdateRequest;
 import com.bakery.server.service.CategoryService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,12 +52,12 @@ public class AdminCategoryController {
     }
 
     @PutMapping
-    private ResponseEntity<?> save(@Valid @NotNull @RequestBody AddCategoryRequest request) {
+    private ResponseEntity<?> save(@Valid @NotNull @RequestBody CategoryAddRequest request) {
         return ResponseEntity.ok(categoryService.save(request));
     }
 
     @PostMapping
-    private ResponseEntity<?> update(@Valid @NotNull @RequestBody UpdateCategoryRequest request) {
+    private ResponseEntity<?> update(@Valid @NotNull @RequestBody CategoryUpdateRequest request) {
         return ResponseEntity.ok(categoryService.update(request));
     }
 

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
-public class UpdateProductRequest {
+public class ProductUpdateRequest {
     @NotNull
     private Long id;
     @NotBlank

@@ -22,6 +22,10 @@ public class VoucherRequest {
         this(null, null, null, null, pattern);
     }
 
+    public VoucherRequest(int length, String pattern) {
+        this(length, null, null, null, pattern);
+    }
+
     public VoucherRequest(Integer length, String charset, String prefix, String postfix, String pattern) {
         if (length == null) {
             length = 8;

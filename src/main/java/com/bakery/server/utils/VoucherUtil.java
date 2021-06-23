@@ -17,6 +17,16 @@ public class VoucherUtil {
         return generate(request);
     }
 
+    public static String generate(int length, String pattern) {
+        VoucherRequest request = new VoucherRequest(length, pattern);
+        return generate(request);
+    }
+
+    public static String generate(int length, VoucherRequest.Charset pattern) {
+        VoucherRequest request = new VoucherRequest(length, pattern.getValue());
+        return generate(request);
+    }
+
     public static String generate(VoucherRequest request) {
         StringBuilder sb = new StringBuilder();
         char[] chars = request.getCharset().toCharArray();

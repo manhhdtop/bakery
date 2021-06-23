@@ -3,6 +3,7 @@ package com.bakery.server.controller.admin;
 import com.bakery.server.constant.Status;
 import com.bakery.server.model.request.VoucherCreateDto;
 import com.bakery.server.model.request.VoucherUpdateDto;
+import com.bakery.server.model.request.VoucherUpdateStatusDto;
 import com.bakery.server.model.response.ApiBaseResponse;
 import com.bakery.server.service.VoucherService;
 import org.apache.commons.lang3.StringUtils;
@@ -16,12 +17,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @PreAuthorize("hasPermission('VOUCHER', 'VIEW')")
 @RequestMapping("${admin-base-path}/voucher")
 @RestController
-public class VoucherController {
+public class AdminVoucherController {
     @Autowired
     private VoucherService voucherService;
 
@@ -57,8 +57,8 @@ public class VoucherController {
     }
 
     @PostMapping("/update-status")
-    public ResponseEntity<?> updateStatus(@NotNull @RequestParam("id") Long id, @NotNull @RequestParam("status") Integer status) {
-        voucherService.updateStatus(id, status);
+    public ResponseEntity<?> updateStatus(@Valid @RequestBody VoucherUpdateStatusDto request) {
+        voucherService.updateStatus(request);
         return ResponseEntity.ok(ApiBaseResponse.success());
     }
 
@@ -66,10 +66,5 @@ public class VoucherController {
     public ResponseEntity<?> delete(@PathVariable Long id) {
         voucherService.delete(id);
         return ResponseEntity.ok(ApiBaseResponse.success());
-    }
-
-    @GetMapping("generate-code")
-    public ResponseEntity<?> generateCode() {
-        return ResponseEntity.ok(voucherService.generateCode());
     }
 }

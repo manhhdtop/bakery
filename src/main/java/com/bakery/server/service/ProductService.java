@@ -1,8 +1,8 @@
 package com.bakery.server.service;
 
-import com.bakery.server.model.request.AddProductRequest;
+import com.bakery.server.model.request.ProductAddRequest;
 import com.bakery.server.model.request.ProductRequest;
-import com.bakery.server.model.request.UpdateProductRequest;
+import com.bakery.server.model.request.ProductUpdateRequest;
 import com.bakery.server.model.response.ApiBaseResponse;
 import org.springframework.data.domain.Pageable;
 
@@ -15,9 +15,9 @@ public interface ProductService {
 
     ApiBaseResponse findById(Long id);
 
-    ApiBaseResponse save(AddProductRequest request);
+    ApiBaseResponse save(ProductAddRequest request);
 
-    ApiBaseResponse update(UpdateProductRequest request);
+    ApiBaseResponse update(ProductUpdateRequest request);
 
     ApiBaseResponse delete(Long id);
 

@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class AddCategoryRequest {
+public class CategoryAddRequest {
     @NotBlank
     private String name;
     @NotBlank

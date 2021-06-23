@@ -1,7 +1,7 @@
 package com.bakery.server.controller.admin;
 
-import com.bakery.server.model.request.AddProductRequest;
-import com.bakery.server.model.request.UpdateProductRequest;
+import com.bakery.server.model.request.ProductAddRequest;
+import com.bakery.server.model.request.ProductUpdateRequest;
 import com.bakery.server.service.ProductService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,12 +50,12 @@ public class AdminProductController {
     }
 
     @PutMapping
-    private ResponseEntity<?> save(@Valid @NotNull @RequestBody AddProductRequest request) {
+    private ResponseEntity<?> save(@Valid @NotNull @RequestBody ProductAddRequest request) {
         return ResponseEntity.ok(productService.save(request));
     }
 
     @PostMapping
-    private ResponseEntity<?> update(@Valid @NotNull @RequestBody UpdateProductRequest request) {
+    private ResponseEntity<?> update(@Valid @NotNull @RequestBody ProductUpdateRequest request) {
         return ResponseEntity.ok(productService.update(request));
     }
 

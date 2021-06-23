@@ -4,9 +4,9 @@ import com.bakery.server.entity.CategoryEntity;
 import com.bakery.server.entity.FileUploadEntity;
 import com.bakery.server.entity.ProductEntity;
 import com.bakery.server.entity.ProductOptionEntity;
-import com.bakery.server.model.request.AddProductRequest;
+import com.bakery.server.model.request.ProductAddRequest;
 import com.bakery.server.model.request.ProductRequest;
-import com.bakery.server.model.request.UpdateProductRequest;
+import com.bakery.server.model.request.ProductUpdateRequest;
 import com.bakery.server.model.response.ApiBaseResponse;
 import com.bakery.server.model.response.ProductResponse;
 import com.bakery.server.model.response.UploadFileResponse;
@@ -70,7 +70,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ApiBaseResponse save(AddProductRequest request) {
+    public ApiBaseResponse save(ProductAddRequest request) {
         request.validData();
         CategoryEntity categoryEntity = categoryRepository.findById(request.getCategoryId()).orElse(null);
         AssertUtil.notNull(categoryEntity, "category.not_found");
@@ -96,7 +96,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ApiBaseResponse update(UpdateProductRequest request) {
+    public ApiBaseResponse update(ProductUpdateRequest request) {
         request.validData();
         ProductEntity entity = productRepository.findById(request.getId()).orElse(null);
         AssertUtil.notNull(entity, "category.not_found");

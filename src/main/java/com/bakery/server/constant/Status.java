@@ -7,7 +7,8 @@ import java.util.Arrays;
 public enum Status {
     DEACTIVE(0, "Chưa kích hoạt"),
     ACTIVE(1, "Hoạt động"),
-    LOCK(-1, "Khóa");
+    LOCK(-1, "Khóa"),
+    EXPIRED(2, "Expired");
 
     private int status;
     private String name;

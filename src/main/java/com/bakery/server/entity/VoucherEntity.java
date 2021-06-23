@@ -34,6 +34,10 @@ public class VoucherEntity extends AuditModel {
     private Long minAmount;
     @Column(name = "max_amount")
     private Long maxAmount;
+    @Column(name = "min_refund")
+    private Long minRefund;
+    @Column(name = "max_refund")
+    private Long maxRefund;
     @Column(name = "type")
     private Integer type;
     @Column(name = "quantity")

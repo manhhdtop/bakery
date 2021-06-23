@@ -133,4 +133,12 @@ public class Utils {
             query.setMaxResults(pageable.getPageSize());
         }
     }
+
+    public static String generateInvoiceId() {
+        String format = "yyMMddhhmmss";
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        String code = sdf.format(new Date());
+        code += VoucherUtil.generate(6);
+        return code;
+    }
 }

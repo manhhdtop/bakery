@@ -23,6 +23,8 @@ public class VoucherUpdateDto {
     private Long value;
     private Long minAmount;
     private Long maxAmount;
+    private Long minRefund;
+    private Long maxRefund;
     @NotNull
     private Integer type;
     @NotNull
@@ -41,22 +43,28 @@ public class VoucherUpdateDto {
         AssertUtil.isTrue(voucherType.contains(type), "voucher.type.notValid");
         AssertUtil.isTrue(quantity > 0, "voucher.quantity.mustGreaterThan0");
         AssertUtil.isTrue(value > 0, "voucher.value.mustGreaterThan0");
-        if (minAmount != null || maxAmount != null) {
-            if (minAmount != null) {
-                AssertUtil.isTrue(type.equals(Constant.VoucherType.AMOUNT) && minAmount <= value, "voucher.minAmount.lessThanValue");
+        if (minAmount != null && maxAmount != null) {
+            AssertUtil.isTrue(type.equals(Constant.VoucherType.AMOUNT) && minAmount <= maxAmount, "voucher.maxAmount.notLessThanMinAmount");
+        }
+        if (minRefund != null || maxRefund != null) {
+            if (minRefund != null) {
+                if (type.equals(Constant.VoucherType.PERCENT)) {
+                    AssertUtil.isTrue(minRefund <= value, "voucher.minRefund.lessThanValue");
+                }
             }
-            if (maxAmount != null) {
-                AssertUtil.isTrue(type.equals(Constant.VoucherType.AMOUNT) && maxAmount >= value, "voucher.maxAmount.notLessThanAmount");
+            if (maxRefund != null) {
+                if (type.equals(Constant.VoucherType.PERCENT)) {
+                    AssertUtil.isTrue(maxRefund <= value, "voucher.maxRefund.notLessThanAmount");
+                }
             }
-            if (minAmount != null && maxAmount != null) {
-                AssertUtil.isTrue(type.equals(Constant.VoucherType.AMOUNT) && minAmount <= maxAmount, "voucher.maxAmount.notLessThanMinAmount");
+            if (minRefund != null && maxRefund != null) {
+                AssertUtil.isTrue(type.equals(Constant.VoucherType.PERCENT) && minRefund <= maxRefund, "voucher.maxRefund.notLessThanMinRefund");
             }
         }
-        LocalDate toDay = LocalDate.now();
-        LocalDate startLocalDate = Utils.asLocalDate(startDate);
-        LocalDate endLocalDate = Utils.asLocalDate(endDate);
-        AssertUtil.isTrue(startLocalDate.isAfter(toDay), "voucher.applyDate.startDateNotBeforeToday");
-        AssertUtil.isTrue(endLocalDate.isAfter(toDay), "voucher.applyDate.endDateNotBeforeToday");
-        AssertUtil.isTrue(startLocalDate.isBefore(endLocalDate), "voucher.applyDate.startDateNotBeforeEndDate");
+        if (type.equals(Constant.VoucherType.PERCENT)) {
+            minRefund = null;
+            maxRefund = null;
+        }
+        AssertUtil.isTrue(startDate.before(endDate), "voucher.applyDate.startDateNotBeforeEndDate");
     }
 }
