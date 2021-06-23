@@ -1,0 +1,46 @@
+# ===============================
+# Config
+# ===============================
+file:
+  upload-dir: /uploads
+  path_uploaded: E:/workspace/toprate
+admin-base-path: /admin
+admin:
+  user:
+    username: admin
+    password: $2a$10$ESiHPIp66GDRAmmVbrb3heW35sa9a88ykZd0vcEy5AoHUtRwW2sPu
+    name: Administrator
+    email: admin@bakery.com
+  role:
+    code: ADMINISTRATOR
+    name: ADMINISTRATOR
+jwt:
+  secret: MdjXPJbHCSQUhDhVENhHmBbZh
+  issuer: bakery.com
+  expired: 604800000 # = 7 * 24 * 60 * 60 * 1000 * 1 Week *
+# ===============================
+# Server
+# ===============================
+server:
+  port: 8081
+  error:
+    include-stacktrace: never
+# ===============================
+# DATABASE
+# ===============================
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bakery?characterEncoding=utf-8&serverTimezone=UTC
+    username: root
+    password: Abc@12345
+    platform: mysql
+    tomcat:
+      jmx-enabled: true
+  jpa:
+    show-sql: false
+    hibernate.ddl-auto: update
+    properties.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+# ===============================
+#
+# ===============================
