@@ -39,18 +39,18 @@ public class OptionTypeServiceImpl implements OptionTypeService {
     }
 
     @Override
-    public ApiBaseResponse save(OptionTypeCreateDto actionCreateDto) {
-        OptionTypeEntity productOptionEntity = modelMapper.map(actionCreateDto, OptionTypeEntity.class);
+    public ApiBaseResponse save(OptionTypeCreateDto request) {
+        OptionTypeEntity productOptionEntity = modelMapper.map(request, OptionTypeEntity.class);
         productOptionEntity = optionTypeRepository.save(productOptionEntity);
         return ApiBaseResponse.success(convert(productOptionEntity));
     }
 
     @Override
-    public ApiBaseResponse update(OptionTypeUpdateDto actionUpdateDto) {
-        OptionTypeEntity actionOld = optionTypeRepository.findById(actionUpdateDto.getId()).orElse(null);
+    public ApiBaseResponse update(OptionTypeUpdateDto request) {
+        OptionTypeEntity actionOld = optionTypeRepository.findById(request.getId()).orElse(null);
         AssertUtil.notNull(actionOld, "action.not_exist");
 
-        modelMapper.map(actionUpdateDto, actionOld);
+        modelMapper.map(request, actionOld);
 
         actionOld = optionTypeRepository.save(actionOld);
         return ApiBaseResponse.success(convert(actionOld));

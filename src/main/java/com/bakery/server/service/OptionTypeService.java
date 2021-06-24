@@ -12,9 +12,9 @@ public interface OptionTypeService {
 
     ApiBaseResponse findByStatus(Integer status);
 
-    ApiBaseResponse save(OptionTypeCreateDto roleCreateDto);
+    ApiBaseResponse save(OptionTypeCreateDto request);
 
-    ApiBaseResponse update(OptionTypeUpdateDto roleUpdateDto);
+    ApiBaseResponse update(OptionTypeUpdateDto request);
 
     void delete(Long id);
 }

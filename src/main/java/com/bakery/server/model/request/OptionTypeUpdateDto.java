@@ -14,4 +14,6 @@ public class OptionTypeUpdateDto {
     private String description;
     @NotNull
     private Integer status;
+    @NotNull
+    private Boolean changePrice;
 }

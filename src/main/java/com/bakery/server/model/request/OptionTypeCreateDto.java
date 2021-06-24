@@ -12,4 +12,6 @@ public class OptionTypeCreateDto {
     private String description;
     @NotNull
     private Integer status;
+    @NotNull
+    private Boolean changePrice;
 }

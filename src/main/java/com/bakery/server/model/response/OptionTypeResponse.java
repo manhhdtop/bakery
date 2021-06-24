@@ -16,11 +16,13 @@ public class OptionTypeResponse {
     private String description;
     private List<ProductOptionResponse> options;
     private Integer status;
+    private Boolean changePrice;
 
     public OptionTypeResponse(Long id, String name) {
         this.id = id;
         this.name = name;
         this.options = new ArrayList<>();
         this.status = 1;
+        this.changePrice = false;
     }
 }

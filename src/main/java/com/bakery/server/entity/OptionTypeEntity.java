@@ -25,4 +25,6 @@ public class OptionTypeEntity extends AuditModel {
     private String description;
     @Column(name = "status")
     private Integer status;
+    @Column(name = "change_price")
+    private Boolean changePrice;
 }
