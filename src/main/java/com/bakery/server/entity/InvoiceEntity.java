@@ -28,16 +28,21 @@ public class InvoiceEntity extends AuditModel {
     private String customerEmail;
     @Column(name = "customer_phone")
     private String customerPhone;
-    @Column(name = "province_id")
-    private Long provinceId;
-    @Column(name = "district_id")
-    private Long districtId;
+    @OneToOne
+    @JoinColumn(name = "province_id", referencedColumnName = "id")
+    private CatalogEntity province;
+    @OneToOne
+    @JoinColumn(name = "district_id", referencedColumnName = "id")
+    private CatalogEntity district;
     @Column(name = "address")
     private String address;
-    @Column(name = "voucher_id")
-    private Long voucherId;
+    @OneToOne
+    @JoinColumn(name = "voucher_id", referencedColumnName = "id")
+    private VoucherEntity voucher;
     @Column(name = "status")
     private Integer status;
+    @Column(name = "status_description")
+    private String statusDescription;
     @Column(name = "total_amount")
     private Long totalAmount;
     @OneToMany

@@ -1,19 +1,14 @@
 package com.bakery.server.service.impl;
 
 import com.bakery.server.constant.Status;
-import com.bakery.server.entity.InvoiceEntity;
-import com.bakery.server.entity.InvoiceProductEntity;
-import com.bakery.server.entity.ProductEntity;
-import com.bakery.server.entity.VoucherEntity;
+import com.bakery.server.entity.*;
 import com.bakery.server.exception.BadRequestException;
 import com.bakery.server.model.request.CartItemRequest;
 import com.bakery.server.model.request.InvoiceCreateDto;
+import com.bakery.server.model.request.InvoiceUpdateStatusDto;
 import com.bakery.server.model.response.ApiBaseResponse;
 import com.bakery.server.model.response.InvoiceResponse;
-import com.bakery.server.repository.InvoiceProductRepository;
-import com.bakery.server.repository.InvoiceRepository;
-import com.bakery.server.repository.ProductRepository;
-import com.bakery.server.repository.VoucherRepository;
+import com.bakery.server.repository.*;
 import com.bakery.server.service.InvoiceService;
 import com.bakery.server.utils.AssertUtil;
 import com.bakery.server.utils.Constant;
@@ -38,6 +33,8 @@ import java.util.stream.Collectors;
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
     @Autowired
+    private CatalogRepository catalogRepository;
+    @Autowired
     private InvoiceRepository invoiceRepository;
     @Autowired
     private InvoiceProductRepository invoiceProductRepository;
@@ -49,11 +46,11 @@ public class InvoiceServiceImpl implements InvoiceService {
     private VoucherRepository voucherRepository;
 
     @Override
-    public ApiBaseResponse findAll(String phoneNumber, Pageable pageable) {
-        if (StringUtils.isBlank(phoneNumber)) {
+    public ApiBaseResponse findAll(String keyword, Pageable pageable) {
+        if (StringUtils.isBlank(keyword)) {
             return ApiBaseResponse.success(convertPage(invoiceRepository.findAll(pageable), pageable));
         }
-        return ApiBaseResponse.success(convertPage(invoiceRepository.findByCustomerPhone(phoneNumber.trim(), pageable), pageable));
+        return ApiBaseResponse.success(convertPage(invoiceRepository.search(keyword.trim(), pageable), pageable));
     }
 
     @Override
@@ -73,6 +70,10 @@ public class InvoiceServiceImpl implements InvoiceService {
             }
             AssertUtil.isTrue(voucher.getStartDate().before(now), "voucher.notExist");
         }
+        CatalogEntity province = catalogRepository.findById(request.getProvinceId()).orElse(null);
+        AssertUtil.notNull(province, "catalog.province.not_found");
+        CatalogEntity district = catalogRepository.findById(request.getDistrictId()).orElse(null);
+        AssertUtil.notNull(district, "catalog.district.not_found");
 
         List<Long> productIds = request.getProducts().stream().map(CartItemRequest::getProductId).collect(Collectors.toList());
         List<ProductEntity> productEntities = productRepository.findAllById(productIds);
@@ -81,6 +82,8 @@ public class InvoiceServiceImpl implements InvoiceService {
         String invoiceId = Utils.generateInvoiceId();
         InvoiceEntity invoice = modelMapper.map(request, InvoiceEntity.class);
         invoice.setInvoiceId(invoiceId);
+        invoice.setProvince(province);
+        invoice.setDistrict(district);
         invoice = invoiceRepository.save(invoice);
 
         Long id = invoice.getId();
@@ -117,11 +120,25 @@ public class InvoiceServiceImpl implements InvoiceService {
                 totalAmount -= totalAmount * value;
             }
             voucherRepository.applyCoupon(voucher.getId());
+            invoice.setVoucher(voucher);
         }
         invoice.setProducts(items);
         invoice.setTotalAmount(totalAmount);
         invoice = invoiceRepository.save(invoice);
 
+        return ApiBaseResponse.success(convert(invoice));
+    }
+
+    @Override
+    public ApiBaseResponse updateStatus(InvoiceUpdateStatusDto request) {
+        InvoiceEntity invoice = invoiceRepository.findById(request.getId()).orElse(null);
+        AssertUtil.notNull(invoice, "invoice.not_found");
+        request.validate(invoice.getStatus());
+        invoice.setStatus(request.getStatus());
+        if (request.getDescription() != null) {
+            invoice.setStatusDescription(request.getDescription().trim());
+        }
+        invoice = invoiceRepository.save(invoice);
         return ApiBaseResponse.success(convert(invoice));
     }
 

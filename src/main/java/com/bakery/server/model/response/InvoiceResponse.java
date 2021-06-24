@@ -12,11 +12,12 @@ public class InvoiceResponse {
     private String customerName;
     private String customerEmail;
     private String customerPhone;
-    private Long provinceId;
-    private Long districtId;
+    private CategoryResponse province;
+    private CategoryResponse district;
     private String address;
-    private Long voucherId;
+    private VoucherResponse voucher;
     private Integer status;
+    private String statusDescription;
     private List<CartItemResponse> products;
     private Date createdDate;
     private Long totalAmount;

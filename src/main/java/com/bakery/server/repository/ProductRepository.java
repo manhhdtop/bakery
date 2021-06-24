@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends ProductRepositoryCustomer, JpaRepository<ProductEntity, Long> {
-    Page<ProductEntity> findByName(String name, Pageable pageable);
+    Page<ProductEntity> findByNameContaining(String name, Pageable pageable);
 
     @Query("SELECT p FROM ProductEntity p WHERE p.category.id=:categoryId")
     Page<ProductEntity> findByCategory(Long categoryId, Pageable pageable);

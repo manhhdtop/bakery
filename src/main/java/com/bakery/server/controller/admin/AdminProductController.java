@@ -21,12 +21,12 @@ public class AdminProductController {
     private ProductService productService;
 
     @GetMapping
-    private ResponseEntity<?> findAll(String name,
+    private ResponseEntity<?> findAll(String keyword,
                                       @Min(1) @RequestParam(name = "page", defaultValue = "1") Integer page,
                                       @Min(5) @RequestParam(name = "size", defaultValue = "20") Integer size) {
         Pageable pageable = PageRequest.of(page - 1, size);
-        if (StringUtils.isNotBlank(name)) {
-            return ResponseEntity.ok(productService.findByName(name, pageable));
+        if (StringUtils.isNotBlank(keyword)) {
+            return ResponseEntity.ok(productService.findByName(keyword, pageable));
         }
         return ResponseEntity.ok(productService.findAll(pageable));
     }

@@ -54,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ApiBaseResponse findByName(String name, Pageable pageable) {
-        return ApiBaseResponse.success(convertPage(productRepository.findByName(name, pageable)));
+        return ApiBaseResponse.success(convertPage(productRepository.findByNameContaining(name, pageable)));
     }
 
     @Override
