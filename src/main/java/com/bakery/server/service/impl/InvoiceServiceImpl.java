@@ -10,6 +10,7 @@ import com.bakery.server.model.response.ApiBaseResponse;
 import com.bakery.server.model.response.InvoiceResponse;
 import com.bakery.server.repository.*;
 import com.bakery.server.service.InvoiceService;
+import com.bakery.server.service.MailService;
 import com.bakery.server.utils.AssertUtil;
 import com.bakery.server.utils.Constant;
 import com.bakery.server.utils.Utils;
@@ -17,14 +18,21 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMultipart;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,11 +47,20 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Autowired
     private InvoiceProductRepository invoiceProductRepository;
     @Autowired
+    private MailService mailService;
+    @Autowired
+    private MailTemplateRepository mailTemplateRepository;
+    @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private ProductRepository productRepository;
     @Autowired
     private VoucherRepository voucherRepository;
+
+    @Value("${base-url:}")
+    private String baseUrl;
+    @Value("${root-path:}")
+    private String rootPath;
 
     @Override
     public ApiBaseResponse findAll(String keyword, Pageable pageable) {
@@ -126,6 +143,8 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setTotalAmount(totalAmount);
         invoice = invoiceRepository.save(invoice);
 
+        sendMailConfirm(invoice);
+
         return ApiBaseResponse.success(convert(invoice));
     }
 
@@ -164,5 +183,53 @@ public class InvoiceServiceImpl implements InvoiceService {
         }.getType();
         List<InvoiceResponse> responses = modelMapper.map(entities, type);
         return new PageImpl<>(responses, pageable, page.getTotalElements());
+    }
+
+    private void sendMailConfirm(InvoiceEntity invoiceEntity) {
+        String templateCode = "INVOICE_TEMPLATE";
+        MailTemplateEntity mailTemplateEntity = mailTemplateRepository.findByCode(templateCode);
+        if (mailTemplateEntity != null && mailTemplateEntity.getStatus() == 1) {
+            String subject = MessageFormat.format(mailTemplateEntity.getSubject(), invoiceEntity.getInvoiceId());
+            StringBuilder items = new StringBuilder();
+            items.append("<table style=\"width: 100%\">");
+            Multipart multipart = new MimeMultipart();
+            for (InvoiceProductEntity p : invoiceEntity.getProducts()) {
+                String uri = p.getProduct().getImages().get(0).getUri();
+                String cid = "image-" + p.getProduct().getId();
+                try {
+                    MimeBodyPart imagePart = new MimeBodyPart();
+                    imagePart.setHeader("Content-ID", cid);
+                    imagePart.setDisposition(MimeBodyPart.INLINE);
+                    imagePart.attachFile(rootPath + uri);
+                    multipart.addBodyPart(imagePart);
+                } catch (MessagingException | IOException e) {
+                    e.printStackTrace();
+                }
+                items.append("  <tr>");
+                items.append("      <td style=\"width: 20%\">");
+//                items.append("      <img style=\"width: 100%; height: auto\" src=\"data:image/jpg;base64,").append(base64).append("\" alt=\"product image\">");
+                items.append("      <img style=\"width: 100%; height: auto\" src=\"cid:").append(cid).append("\" alt=\"product image\">");
+                items.append("      </td>");
+                items.append("      <td style=\"width: 80%; vertical-align: top\">");
+                items.append("        <h5>").append(p.getProduct().getName()).append("</h5>");
+                items.append("        <span>Số lượng: ").append(p.getQuantity()).append("</span><br/>");
+                items.append("        <span>Giá: ").append(String.format("%,d", p.getProduct().getPrice())).append("₫</span>");
+                items.append("      </td>");
+                items.append("  </tr>");
+            }
+            items.append("</table>");
+
+            String message = MessageFormat.format(mailTemplateEntity.getMessage(),
+                    invoiceEntity.getCustomerName(),
+                    invoiceEntity.getInvoiceId(),
+                    invoiceEntity.getCustomerName(),
+                    invoiceEntity.getCustomerPhone(),
+                    invoiceEntity.getCustomerEmail(),
+                    invoiceEntity.getAddress(),
+                    items.toString()
+            );
+
+            mailService.sendMail(invoiceEntity.getCustomerEmail(), subject, message, multipart);
+        }
     }
 }

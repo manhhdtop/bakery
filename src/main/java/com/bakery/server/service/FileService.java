@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -100,4 +103,42 @@ public class FileService {
         }
     }
 
+    public File getFile(String url) {
+        String uri = rootPath + url;
+        File file = new File(uri);
+        if (file.exists()) {
+            return file;
+        }
+        return null;
+    }
+
+    public byte[] readFile(String url) {
+        File file = getFile(url);
+        if (file == null) {
+            return null;
+        }
+        byte[] bytes = null;
+        try (InputStream is = new FileInputStream(file)) {
+
+            long length = file.length();
+            if (length > Integer.MAX_VALUE) {
+                return null;
+            }
+            bytes = new byte[(int) length];
+
+            int offset = 0;
+            int numRead = 0;
+            while (offset < bytes.length
+                    && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+                offset += numRead;
+            }
+
+            if (offset < bytes.length) {
+                return null;
+            }
+        } catch (Exception e) {
+
+        }
+        return bytes;
+    }
 }
