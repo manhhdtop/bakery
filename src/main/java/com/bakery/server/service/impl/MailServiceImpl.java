@@ -8,9 +8,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.mail.*;
 import javax.mail.internet.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -32,20 +35,22 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void sendMail(String toEmail, String subject, String message, Multipart multipart) {
-        sendMail(subject, message, multipart, Collections.singletonList(toEmail));
+    public void sendMail(String toEmail, String subject, String message, List<File> files, List<String> cids) {
+        sendMail(subject, message, files, cids, Collections.singletonList(toEmail));
     }
 
     @Override
-    public void sendMail(List<String> toEmails, String subject, String message, Multipart multipart) {
-        sendMail(subject, message, multipart, toEmails);
+    public void sendMail(List<String> toEmails, String subject, String message, List<File> files, List<String> cids) {
+        sendMail(subject, message, files, cids, toEmails);
     }
 
     private void sendMail(String subject, String message, List<String> toEmails) {
-        sendMail(subject, message, null, toEmails);
+        List<File> files = null;
+        List<String> cids = null;
+        sendMail(subject, message, files, cids, toEmails);
     }
 
-    private void sendMail(String subject, String messageBody, Multipart multipart, List<String> toEmails) {
+    private void sendMail(String subject, String messageBody, List<File> files, List<String> cids, List<String> toEmails) {
         AssertUtil.isTrue(StringUtils.isNotBlank(subject), "mail.subject.not_blank");
         AssertUtil.isTrue(StringUtils.isNotBlank(messageBody), "mail.message.not_blank");
         AssertUtil.notEmpty(toEmails, "mail.emails.not_blank");
@@ -76,13 +81,22 @@ public class MailServiceImpl implements MailService {
 
             MimeBodyPart mimeBodyPart = new MimeBodyPart();
             mimeBodyPart.setContent(messageBody, "text/html; charset=UTF-8");
+            mimeBodyPart.setDisposition("inline");
 
-            if (multipart == null) {
-                multipart = new MimeMultipart();
+            Multipart content = new MimeMultipart();
+            content.addBodyPart(mimeBodyPart);
+
+            if (!CollectionUtils.isEmpty(files)) {
+                for (int i = 0; i < files.size(); i++) {
+                    MimeBodyPart imagePart = new MimeBodyPart();
+                    imagePart.attachFile(files.get(i));
+                    imagePart.setContentID("<" + cids.get(i) + ">");
+                    imagePart.setDisposition(MimeBodyPart.INLINE);
+                    content.addBodyPart(imagePart);
+                }
             }
-            multipart.addBodyPart(mimeBodyPart);
 
-            message.setContent(multipart);
+            message.setContent(content);
 
             Transport.send(message);
         } catch (AddressException e) {
@@ -90,6 +104,9 @@ public class MailServiceImpl implements MailService {
             throw new BadRequestException("mail.email_address.invalid");
         } catch (MessagingException e) {
             log.error("(MailService) MessagingException: {}, \n", e.getMessage(), e);
+            throw new BadRequestException("mail.send_error");
+        } catch (IOException e) {
+            log.error("(MailService) IOException: {}, \n", e.getMessage(), e);
             throw new BadRequestException("mail.send_error");
         }
         log.info("(MailService) send mail success");

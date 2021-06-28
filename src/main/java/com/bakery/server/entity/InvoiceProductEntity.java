@@ -14,7 +14,10 @@ import javax.persistence.*;
 public class InvoiceProductEntity {
     private static final long serialVersionUID = 1L;
 
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    private Long id;
     @Column(name = "invoice_id")
     private Long invoiceId;
     @OneToOne

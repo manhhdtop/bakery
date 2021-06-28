@@ -30,6 +30,7 @@ import javax.mail.Multipart;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 import javax.transaction.Transactional;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.MessageFormat;
@@ -59,7 +60,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Value("${base-url:}")
     private String baseUrl;
-    @Value("${root-path:}")
+    @Value("${file.root-path:}")
     private String rootPath;
 
     @Override
@@ -179,9 +180,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     private Page<InvoiceResponse> convertPage(Page<InvoiceEntity> page, Pageable pageable) {
         List<InvoiceEntity> entities = page.getContent();
-        Type type = new TypeToken<List<InvoiceResponse>>() {
-        }.getType();
-        List<InvoiceResponse> responses = modelMapper.map(entities, type);
+        List<InvoiceResponse> responses = convertList(entities);
         return new PageImpl<>(responses, pageable, page.getTotalElements());
     }
 
@@ -191,20 +190,14 @@ public class InvoiceServiceImpl implements InvoiceService {
         if (mailTemplateEntity != null && mailTemplateEntity.getStatus() == 1) {
             String subject = MessageFormat.format(mailTemplateEntity.getSubject(), invoiceEntity.getInvoiceId());
             StringBuilder items = new StringBuilder();
+            List<String> cids = new ArrayList<>();
+            List<File> files = new ArrayList<>();
             items.append("<table style=\"width: 100%\">");
-            Multipart multipart = new MimeMultipart();
             for (InvoiceProductEntity p : invoiceEntity.getProducts()) {
                 String uri = p.getProduct().getImages().get(0).getUri();
                 String cid = "image-" + p.getProduct().getId();
-                try {
-                    MimeBodyPart imagePart = new MimeBodyPart();
-                    imagePart.setHeader("Content-ID", cid);
-                    imagePart.setDisposition(MimeBodyPart.INLINE);
-                    imagePart.attachFile(rootPath + uri);
-                    multipart.addBodyPart(imagePart);
-                } catch (MessagingException | IOException e) {
-                    e.printStackTrace();
-                }
+                cids.add(cid);
+                files.add(new File(rootPath + uri));
                 items.append("  <tr>");
                 items.append("      <td style=\"width: 20%\">");
 //                items.append("      <img style=\"width: 100%; height: auto\" src=\"data:image/jpg;base64,").append(base64).append("\" alt=\"product image\">");
@@ -229,7 +222,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                     items.toString()
             );
 
-            mailService.sendMail(invoiceEntity.getCustomerEmail(), subject, message, multipart);
+            mailService.sendMail(invoiceEntity.getCustomerEmail(), subject, message, files, cids);
         }
     }
 }
