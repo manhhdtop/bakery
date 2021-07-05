@@ -7,6 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+import java.util.List;
+
 @Repository
 public interface InvoiceRepository extends BaseRepository<InvoiceEntity, Long> {
     InvoiceEntity findByInvoiceId(String invoiceId);
@@ -15,4 +18,6 @@ public interface InvoiceRepository extends BaseRepository<InvoiceEntity, Long> {
 
     @Query("SELECT i FROM InvoiceEntity i WHERE i.invoiceId=:keyword OR i.customerPhone=:keyword")
     Page<InvoiceEntity> search(String keyword, Pageable pageable);
+
+    List<InvoiceEntity> findByCreatedDateAfter(Long startDate);
 }

@@ -102,6 +102,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setInvoiceId(invoiceId);
         invoice.setProvince(province);
         invoice.setDistrict(district);
+        invoice.setStatus(0);
         invoice = invoiceRepository.save(invoice);
 
         Long id = invoice.getId();
