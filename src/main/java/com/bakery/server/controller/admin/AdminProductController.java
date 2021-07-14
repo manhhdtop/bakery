@@ -1,5 +1,7 @@
 package com.bakery.server.controller.admin;
 
+import com.bakery.server.model.request.NewsAddRequest;
+import com.bakery.server.model.request.NewUpdateRequest;
 import com.bakery.server.model.request.ProductAddRequest;
 import com.bakery.server.model.request.ProductUpdateRequest;
 import com.bakery.server.service.ProductService;

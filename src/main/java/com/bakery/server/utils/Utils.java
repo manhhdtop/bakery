@@ -54,7 +54,7 @@ public class Utils {
 
     public static String removeAccent(String s, boolean isLowerCase) {
         if (isLowerCase) {
-            s = s.toLowerCase().replaceAll("đ", "d");
+            s = s.toLowerCase();
         }
 
         s = s.replaceAll("đ", "d").trim();

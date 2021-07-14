@@ -1,8 +1,6 @@
 package com.bakery.server.service;
 
-import com.bakery.server.model.request.ProductAddRequest;
-import com.bakery.server.model.request.ProductRequest;
-import com.bakery.server.model.request.ProductUpdateRequest;
+import com.bakery.server.model.request.*;
 import com.bakery.server.model.response.ApiBaseResponse;
 import org.springframework.data.domain.Pageable;
 
