@@ -32,7 +32,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/bakery?characterEncoding=utf-8&serverTimezone=UTC
-    username: root
+    username: admin
     password: bakery2021
     platform: mysql
     tomcat:
