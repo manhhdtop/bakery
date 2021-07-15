@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.bakery</groupId>
-    <artifactId>server</artifactId>
+    <artifactId>bakery</artifactId>
     <version>0.0.1</version>
     <packaging>jar</packaging>
-    <name>server</name>
+    <name>bakery</name>
     <description>Thảo Thảo Bakery</description>
     <properties>
         <java.version>8</java.version>
