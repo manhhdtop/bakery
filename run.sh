@@ -1,0 +1,1 @@
+java -jar -Dspring.profiles.active=release target/bakery-0.0.1.jar
