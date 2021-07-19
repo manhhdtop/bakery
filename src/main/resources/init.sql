@@ -126,7 +126,7 @@ VALUES (1, 1),
 ----------------
 -- Catalog
 ----------------
-Insert into CATALOG (CODE,REGION_CODE,NAME,DESCRIPTION,STATUS,TYPE,PARENT_CODE) values ('101','1','Hà Nội','Hà Nội ',1,1,'0'),
+Insert into `bakery`.`CATALOG` (CODE,REGION_CODE,NAME,DESCRIPTION,STATUS,TYPE,PARENT_CODE) values ('101','1','Hà Nội','Hà Nội ',1,1,'0'),
                                                                                        ('103','1','Hải Phòng','Hải Phòng',1,1,'0'),
                                                                                        ('104','1','Vĩnh Phúc','Vĩnh Phúc',1,1,'0'),
                                                                                        ('107','1','Hải Dương','Hải Dương',1,1,'0'),
@@ -193,7 +193,7 @@ Insert into CATALOG (CODE,REGION_CODE,NAME,DESCRIPTION,STATUS,TYPE,PARENT_CODE) 
 
 
 
-Insert into CATALOG (CODE,REGION_CODE,NAME,DESCRIPTION,STATUS,TYPE,PARENT_CODE) values ('8234870','1','Huyện Than Uyên','Huyện Than Uyên',1,2,'301'),
+Insert into `bakery`.`CATALOG` (CODE,REGION_CODE,NAME,DESCRIPTION,STATUS,TYPE,PARENT_CODE) values ('8234870','1','Huyện Than Uyên','Huyện Than Uyên',1,2,'301'),
                                                                                        ('8232822','1','Thị xã Mường Lay','Thị xã Mường Lay',1,2,'108'),
                                                                                        ('8233445','2','Huyện Nông Sơn','Huyện Nông Sơn',1,2,'503'),
                                                                                        ('8233446','2','Huyện Phú Ninh','Huyện Phú Ninh',1,2,'503'),
@@ -1649,7 +1649,7 @@ Insert into CATALOG (CODE,REGION_CODE,NAME,DESCRIPTION,STATUS,TYPE,PARENT_CODE) 
 
 
 
-Insert into CATALOG (CODE,REGION_CODE,NAME,DESCRIPTION,STATUS,TYPE,PARENT_CODE) values ('8234988','3','Xã Bình Hàng Trung','Xã Bình Hàng Trung',1,3,'80301'),
+Insert into `bakery`.`CATALOG` (CODE,REGION_CODE,NAME,DESCRIPTION,STATUS,TYPE,PARENT_CODE) values ('8234988','3','Xã Bình Hàng Trung','Xã Bình Hàng Trung',1,3,'80301'),
                                                                                        ('8234989','3','Xã Bình Hàng Tây','Xã Bình Hàng Tây',1,3,'80301'),
                                                                                        ('8234869','1','Xã Kim Linh','Xã Kim Linh',1,3,'20115'),
                                                                                        ('8234874','1','Xã Phúc Than','Xã Phúc Than',1,3,'8234870'),
