@@ -8,8 +8,8 @@ import javax.persistence.*;
 @MappedSuperclass
 public class BaseModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "deleted")
