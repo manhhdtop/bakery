@@ -25,6 +25,8 @@ server:
     include-stacktrace: never
   tomcat:
     max-swallow-size: -1
+  servlet:
+    context-path: /bakery
 # ===============================
 # DATABASE
 # ===============================
