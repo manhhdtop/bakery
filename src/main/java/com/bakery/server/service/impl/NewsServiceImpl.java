@@ -16,6 +16,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -131,7 +132,8 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public ApiBaseResponse getHomeNews() {
-        return ApiBaseResponse.success(convertPage(newsRepository.getActiveNews(Pageable.unpaged())));
+        Pageable pageable = PageRequest.of(0, 10);
+        return ApiBaseResponse.success(convertPage(newsRepository.getActiveNews(pageable)));
     }
 
     @Override

@@ -2,11 +2,12 @@ package com.bakery.server.controller;
 
 import com.bakery.server.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.Min;
 
 @RequestMapping("news")
 @RestController
@@ -15,7 +16,14 @@ public class NewsController {
     private NewsService newsService;
 
     @GetMapping
-    private ResponseEntity<?> findAll() {
+    private ResponseEntity<?> findAll(@Min(1) @RequestParam(name = "page", defaultValue = "1") Integer page,
+                                      @Min(5) @RequestParam(name = "size", defaultValue = "20") Integer size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return ResponseEntity.ok(newsService.findAll(pageable));
+    }
+
+    @GetMapping("/home-news")
+    private ResponseEntity<?> homeNews() {
         return ResponseEntity.ok(newsService.getHomeNews());
     }
 
