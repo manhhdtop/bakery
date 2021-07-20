@@ -7,9 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @AllArgsConstructor
 @Data
@@ -29,6 +28,9 @@ public class NewsEntity extends AuditModel {
     private String description;
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
+    @OneToOne
+    @JoinColumn(name = "reference_id", referencedColumnName = "id")
+    private FileUploadEntity image;
     @Column(name = "_read", columnDefinition = "int default 0")
     private Integer read;
     @Column(name = "_like", columnDefinition = "int default 0")

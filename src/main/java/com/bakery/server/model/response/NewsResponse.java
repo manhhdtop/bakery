@@ -15,6 +15,7 @@ public class NewsResponse {
     private String slug;
     private String description;
     private String content;
+    private UploadFileResponse image;
     private Integer read;
     private Integer like;
     private Date createdDate;

@@ -27,4 +27,6 @@ public interface NewsService {
     ApiBaseResponse likeNews(Long id);
 
     ApiBaseResponse getHomeNews();
+
+    ApiBaseResponse actives(Pageable pageable);
 }

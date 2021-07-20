@@ -36,6 +36,13 @@ public class AdminNewsController {
         return ResponseEntity.ok(newsService.findById(id));
     }
 
+    @GetMapping("/actives")
+    private ResponseEntity<?> actives(@Min(1) @RequestParam(name = "page", defaultValue = "1") Integer page,
+                                      @Min(5) @RequestParam(name = "size", defaultValue = "20") Integer size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return ResponseEntity.ok(newsService.actives(pageable));
+    }
+
     @GetMapping("/create-slug")
     private ResponseEntity<?> createSlug(String name) {
         return ResponseEntity.ok(newsService.createSlug(name));

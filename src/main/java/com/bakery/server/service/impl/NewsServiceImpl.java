@@ -1,10 +1,12 @@
 package com.bakery.server.service.impl;
 
+import com.bakery.server.entity.FileUploadEntity;
 import com.bakery.server.entity.NewsEntity;
 import com.bakery.server.model.request.NewUpdateRequest;
 import com.bakery.server.model.request.NewsAddRequest;
 import com.bakery.server.model.response.ApiBaseResponse;
 import com.bakery.server.model.response.NewsResponse;
+import com.bakery.server.repository.FileUploadRepository;
 import com.bakery.server.repository.NewsRepository;
 import com.bakery.server.service.NewsService;
 import com.bakery.server.utils.AssertUtil;
@@ -26,6 +28,8 @@ import java.util.List;
 @Service
 @Transactional
 public class NewsServiceImpl implements NewsService {
+    @Autowired
+    private FileUploadRepository fileUploadRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -53,6 +57,10 @@ public class NewsServiceImpl implements NewsService {
         request.validData();
         NewsEntity entity = modelMapper.map(request, NewsEntity.class);
         entity = newsRepository.save(entity);
+        FileUploadEntity fileUploadEntity = modelMapper.map(request.getImageUpload(), FileUploadEntity.class);
+        fileUploadRepository.save(fileUploadEntity);
+        entity.setImage(fileUploadEntity);
+        entity = newsRepository.save(entity);
         return ApiBaseResponse.success(convert(entity));
     }
 
@@ -66,6 +74,11 @@ public class NewsServiceImpl implements NewsService {
             AssertUtil.isTrue(entityBySlug.getId().equals(entity.getId()), "news.slug_exist");
         }
         modelMapper.map(request, entity);
+        if (request.getImageUpload().getReferenceId() == null) {
+            FileUploadEntity fileUploadEntity = modelMapper.map(request.getImageUpload(), FileUploadEntity.class);
+            fileUploadRepository.save(fileUploadEntity);
+            entity.setImage(fileUploadEntity);
+        }
         entity = newsRepository.save(entity);
         return ApiBaseResponse.success(convert(entity));
     }
@@ -119,6 +132,11 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public ApiBaseResponse getHomeNews() {
         return ApiBaseResponse.success(convertPage(newsRepository.getActiveNews(Pageable.unpaged())));
+    }
+
+    @Override
+    public ApiBaseResponse actives(Pageable pageable) {
+        return ApiBaseResponse.success(convertPage(newsRepository.getActiveNews(pageable)));
     }
 
     private NewsResponse convert(NewsEntity entity) {
