@@ -43,7 +43,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public ApiBaseResponse findByName(String name, Pageable pageable) {
-        return ApiBaseResponse.success(convertPage(newsRepository.findByNameContaining(name, pageable)));
+        return ApiBaseResponse.success(convertPage(newsRepository.findByNameContaining(name.trim(), pageable)));
     }
 
     @Override
