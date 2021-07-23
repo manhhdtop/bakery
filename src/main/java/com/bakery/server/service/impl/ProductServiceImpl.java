@@ -6,6 +6,7 @@ import com.bakery.server.entity.ProductEntity;
 import com.bakery.server.entity.ProductOptionEntity;
 import com.bakery.server.model.request.*;
 import com.bakery.server.model.response.ApiBaseResponse;
+import com.bakery.server.model.response.ProductPriceRangeResponse;
 import com.bakery.server.model.response.ProductResponse;
 import com.bakery.server.model.response.UploadFileResponse;
 import com.bakery.server.repository.CategoryRepository;
@@ -160,7 +161,8 @@ public class ProductServiceImpl implements ProductService {
         if (request.getFromPrice() != null && request.getToPrice() != null) {
             AssertUtil.isTrue(request.getToPrice() >= request.getFromPrice(), "product.search.from_price_must_less_than_to_price");
         }
-        return ApiBaseResponse.success(productRepository.getHomeProduct(request));
+        ProductPriceRangeResponse productPriceRangeResponse = productRepository.calculateProductPriceRange(request);
+        return ApiBaseResponse.success(productRepository.getHomeProduct(request), productPriceRangeResponse);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.bakery.server.repository.customer.impl;
 
 import com.bakery.server.model.request.ProductRequest;
+import com.bakery.server.model.response.ProductPriceRangeResponse;
 import com.bakery.server.model.response.ProductResponse;
 import com.bakery.server.repository.customer.ProductRepositoryCustomer;
 import com.bakery.server.utils.Constant;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.bakery.server.utils.Constant.RESULT_SET_MAPPING.PRODUCT_PRICE_RANGE_RESPONSE;
 import static com.bakery.server.utils.Constant.RESULT_SET_MAPPING.PRODUCT_RESPONSE;
 
 @Repository
@@ -59,6 +61,61 @@ public class ProductRepositoryCustomerImpl implements ProductRepositoryCustomer 
         }
         try {
             return (ProductResponse) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public ProductPriceRangeResponse calculateProductPriceRange(ProductRequest request) {
+        Map<String, Object> paramsMap = new HashMap<>();
+        StringBuilder sb = new StringBuilder();
+        if (StringUtils.isNotBlank(request.getName())) {
+            paramsMap.put("productName", request.getName());
+            sb.append("				AND p.name LIKE CONCAT('%', :productName, '%') \n");
+        }
+        if (StringUtils.isNotBlank(request.getSlug())) {
+            paramsMap.put("slug", request.getSlug());
+            sb.append("				AND p.slug=:slug \n");
+        }
+        if (request.getCategoryId() != null) {
+            paramsMap.put("categoryId", request.getCategoryId());
+            sb.append("				AND c.id=:categoryId \n");
+        }
+        if (!CollectionUtils.isEmpty(request.getCategoryIds())) {
+            paramsMap.put("categoryIds", request.getCategoryIds());
+            sb.append("				AND c.id IN :categoryIds \n");
+        }
+        if (request.getFromPrice() != null) {
+            paramsMap.put("fromPrice", request.getFromPrice());
+            sb.append("				AND p.price>=:fromPrice \n");
+        }
+        if (request.getToPrice() != null) {
+            paramsMap.put("toPrice", request.getToPrice());
+            sb.append("				AND p.price<=:toPrice \n");
+        }
+        String condition = sb.toString();
+        sb = new StringBuilder();
+        sb.append("SELECT  \n");
+        sb.append("		( \n");
+        sb.append("				SELECT p.price FROM product p \n");
+        sb.append("				WHERE p.status=1 \n");
+        sb.append(condition);
+        sb.append("				ORDER BY p.price LIMIT 1 \n");
+        sb.append("    ) min, \n");
+        sb.append("    ( \n");
+        sb.append("				SELECT p.price FROM product p \n");
+        sb.append("				WHERE p.status=1 \n");
+        sb.append(condition);
+        sb.append("				ORDER BY p.price DESC LIMIT 1 \n");
+        sb.append("    ) max \n");
+
+        Query query = entityManager.createNativeQuery(sb.toString(), PRODUCT_PRICE_RANGE_RESPONSE);
+        if (!CollectionUtils.isEmpty(paramsMap)) {
+            paramsMap.forEach(query::setParameter);
+        }
+        try {
+            return (ProductPriceRangeResponse) query.getSingleResult();
         } catch (NoResultException e) {
             return null;
         }

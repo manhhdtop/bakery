@@ -29,7 +29,9 @@ public class ProductResponse {
         this.slug = slug;
         this.description = description;
         this.price = price;
-        this.images = Arrays.stream(images.split(",")).map(UploadFileResponse::of).collect(Collectors.toList());
+        if (StringUtils.isNotBlank(images)) {
+            this.images = Arrays.stream(images.split(",")).map(UploadFileResponse::of).collect(Collectors.toList());
+        }
         this.category = new CategoryResponse(categoryId, categoryName);
         convertOpitons(options);
     }

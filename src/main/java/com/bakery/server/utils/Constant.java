@@ -7,6 +7,7 @@ public interface Constant {
 
     class RESULT_SET_MAPPING {
         public static final String PRODUCT_RESPONSE = "PRODUCT_RESPONSE_MAPPING";
+        public static final String PRODUCT_PRICE_RANGE_RESPONSE = "PRODUCT_PRICE_RANGE_RESPONSE_MAPPING";
     }
 
     class CONTENT_TYPE_FILE {

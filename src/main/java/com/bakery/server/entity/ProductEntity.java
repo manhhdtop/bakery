@@ -1,6 +1,7 @@
 package com.bakery.server.entity;
 
 import com.bakery.server.entity.base.AuditModel;
+import com.bakery.server.model.response.ProductPriceRangeResponse;
 import com.bakery.server.model.response.ProductResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +12,7 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.util.List;
 
+import static com.bakery.server.utils.Constant.RESULT_SET_MAPPING.PRODUCT_PRICE_RANGE_RESPONSE;
 import static com.bakery.server.utils.Constant.RESULT_SET_MAPPING.PRODUCT_RESPONSE;
 
 @SqlResultSetMapping(
@@ -27,6 +29,17 @@ import static com.bakery.server.utils.Constant.RESULT_SET_MAPPING.PRODUCT_RESPON
                         @ColumnResult(name = "categoryId", type = Long.class),
                         @ColumnResult(name = "categoryName", type = String.class),
                         @ColumnResult(name = "options", type = String.class)
+                }
+        )
+)
+
+@SqlResultSetMapping(
+        name = PRODUCT_PRICE_RANGE_RESPONSE,
+        classes = @ConstructorResult(
+                targetClass = ProductPriceRangeResponse.class,
+                columns = {
+                        @ColumnResult(name = "min", type = Long.class),
+                        @ColumnResult(name = "max", type = Long.class)
                 }
         )
 )

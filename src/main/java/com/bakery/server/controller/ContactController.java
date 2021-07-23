@@ -17,7 +17,7 @@ public class ContactController {
     @Autowired
     private ContactService contactService;
 
-    @PostMapping("/new-contact")
+    @PostMapping("new-contact")
     public ResponseEntity<?> newContact(@Valid @RequestBody NewContactDto request) {
         return ResponseEntity.ok(contactService.newContact(request));
     }
