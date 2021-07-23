@@ -84,7 +84,7 @@ public class ProductRepositoryCustomerImpl implements ProductRepositoryCustomer 
         }
         if (!CollectionUtils.isEmpty(request.getCategoryIds())) {
             paramsMap.put("categoryIds", request.getCategoryIds());
-            sb.append("				AND c.id IN :categoryIds \n");
+            sb.append("				AND p.category_id IN :categoryIds \n");
         }
         if (request.getFromPrice() != null) {
             paramsMap.put("fromPrice", request.getFromPrice());
