@@ -69,6 +69,16 @@ public class ProductEntity extends AuditModel {
     @OneToMany
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private List<ProductOptionEntity> options;
+    @Column(name = "rate_1")
+    private Integer rate1;
+    @Column(name = "rate_2")
+    private Integer rate2;
+    @Column(name = "rate_3")
+    private Integer rate3;
+    @Column(name = "rate_4")
+    private Integer rate4;
+    @Column(name = "rate_5")
+    private Integer rate5;
     @Column(name = "status")
     private Integer status;
 }

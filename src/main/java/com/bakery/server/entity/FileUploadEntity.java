@@ -23,6 +23,8 @@ public class FileUploadEntity extends AuditModel {
 
     @Column(name = "reference_id")
     private Long referenceId;
+    @Column(name = "reference_type")
+    private String referenceType;
     @Column(name = "file_name")
     private String fileName;
     @Column(name = "uri")

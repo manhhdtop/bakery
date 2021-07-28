@@ -1,5 +1,6 @@
 package com.bakery.server.service.impl;
 
+import com.bakery.server.constant.ReferenceType;
 import com.bakery.server.entity.FileUploadEntity;
 import com.bakery.server.entity.NewsEntity;
 import com.bakery.server.model.request.NewUpdateRequest;
@@ -59,7 +60,8 @@ public class NewsServiceImpl implements NewsService {
         NewsEntity entity = modelMapper.map(request, NewsEntity.class);
         entity = newsRepository.save(entity);
         FileUploadEntity fileUploadEntity = modelMapper.map(request.getImageUpload(), FileUploadEntity.class);
-        fileUploadRepository.save(fileUploadEntity);
+        fileUploadEntity.setReferenceType(ReferenceType.NEWS.getName());
+        fileUploadEntity = fileUploadRepository.save(fileUploadEntity);
         entity.setImage(fileUploadEntity);
         entity = newsRepository.save(entity);
         return ApiBaseResponse.success(convert(entity));

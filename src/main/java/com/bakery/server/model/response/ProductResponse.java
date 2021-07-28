@@ -21,7 +21,6 @@ public class ProductResponse {
     private List<ProductOptionResponse> options;
     private List<OptionTypeResponse> optionTypes;
     private CategoryResponse category;
-    private Integer status;
 
     public ProductResponse(Long id, String name, String slug, String description, Long price, String images, Long categoryId, String categoryName, String options) {
         this.id = id;

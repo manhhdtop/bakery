@@ -1,9 +1,7 @@
 package com.bakery.server.service.impl;
 
-import com.bakery.server.entity.CategoryEntity;
-import com.bakery.server.entity.FileUploadEntity;
-import com.bakery.server.entity.ProductEntity;
-import com.bakery.server.entity.ProductOptionEntity;
+import com.bakery.server.constant.ReferenceType;
+import com.bakery.server.entity.*;
 import com.bakery.server.model.request.*;
 import com.bakery.server.model.response.ApiBaseResponse;
 import com.bakery.server.model.response.ProductPriceRangeResponse;
@@ -11,16 +9,19 @@ import com.bakery.server.model.response.ProductResponse;
 import com.bakery.server.model.response.UploadFileResponse;
 import com.bakery.server.repository.CategoryRepository;
 import com.bakery.server.repository.FileUploadRepository;
+import com.bakery.server.repository.ProductRateRepository;
 import com.bakery.server.repository.ProductRepository;
 import com.bakery.server.service.ProductOptionService;
 import com.bakery.server.service.ProductService;
 import com.bakery.server.utils.AssertUtil;
 import com.bakery.server.utils.Utils;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +46,8 @@ public class ProductServiceImpl implements ProductService {
     private ProductOptionService productOptionService;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private ProductRateRepository productRateRepository;
 
     @Override
     public ApiBaseResponse findAll(Pageable pageable) {
@@ -87,7 +90,10 @@ public class ProductServiceImpl implements ProductService {
         }.getType();
         List<FileUploadEntity> fileUploadEntities = modelMapper.map(request.getImageUploads(), fileUploadEntitiesType);
         Long referenceId = entity.getId();
-        fileUploadEntities.forEach(e -> e.setReferenceId(referenceId));
+        fileUploadEntities.forEach(e -> {
+            e.setReferenceId(referenceId);
+            e.setReferenceType(ReferenceType.PRODUCT.getName());
+        });
         fileUploadRepository.saveAll(fileUploadEntities);
         entity.setImages(fileUploadEntities);
         entity = productRepository.save(entity);
@@ -107,7 +113,10 @@ public class ProductServiceImpl implements ProductService {
         }.getType();
         List<FileUploadEntity> fileUploadEntities = modelMapper.map(request.getImageUploads(), fileUploadEntitiesType);
         Long referenceId = entity.getId();
-        fileUploadEntities.forEach(e -> e.setReferenceId(referenceId));
+        fileUploadEntities.forEach(e -> {
+            e.setReferenceId(referenceId);
+            e.setReferenceType(ReferenceType.PRODUCT.getName());
+        });
         if (!CollectionUtils.isEmpty(fileUploadEntities)) {
             fileUploadRepository.saveAll(fileUploadEntities);
         }
@@ -170,6 +179,27 @@ public class ProductServiceImpl implements ProductService {
         ProductResponse response = productRepository.findBySlug(slug);
         AssertUtil.notNull(response, "product.not_found");
         return ApiBaseResponse.success(response);
+    }
+
+    @Override
+    public ApiBaseResponse rate(RateRequest request) {
+        AssertUtil.notNull(request.getProductId(), "product.not_found");
+        AssertUtil.notNull(request.getRate(), "product.rate.value_invalid");
+        ProductEntity entity = productRepository.findById(request.getProductId()).orElse(null);
+        AssertUtil.notNull(entity, "product.not_found");
+        if (StringUtils.isNotBlank(request.getDescription())) {
+            request.setDescription(request.getDescription().trim());
+        }
+        ProductRateEntity rate = modelMapper.map(request, ProductRateEntity.class);
+        productRateRepository.save(rate);
+        ProductResponse response = productRepository.findBySlug(entity.getSlug());
+        return ApiBaseResponse.success(response);
+    }
+
+    @Override
+    public ApiBaseResponse getRates(ProductRateRequest request) {
+        Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSize());
+        return ApiBaseResponse.success(productRateRepository.findByProductIdOrderByCreatedDateDesc(request.getProductId(), pageable));
     }
 
     private ProductResponse convert(ProductEntity productEntity) {

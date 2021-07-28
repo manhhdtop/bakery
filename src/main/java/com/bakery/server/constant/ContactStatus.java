@@ -21,11 +21,6 @@ public enum ContactStatus {
         return Arrays.stream(values()).filter(e -> e.status == status).findFirst().orElse(null);
     }
 
-    public static String getName(int status) {
-        ContactStatus userStatus = Arrays.stream(values()).filter(e -> e.status == status).findFirst().orElse(null);
-        return userStatus == null ? null : userStatus.name;
-    }
-
     @JsonValue
     public int getStatus() {
         return status;

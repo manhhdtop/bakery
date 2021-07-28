@@ -24,4 +24,8 @@ public interface ProductService {
     ApiBaseResponse getHomeProduct(ProductRequest request);
 
     ApiBaseResponse findBySlug(String slug);
+
+    ApiBaseResponse rate(RateRequest request);
+
+    ApiBaseResponse getRates(ProductRateRequest request);
 }
