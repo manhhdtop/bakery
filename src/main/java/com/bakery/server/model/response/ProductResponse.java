@@ -17,17 +17,23 @@ public class ProductResponse {
     private String slug;
     private String description;
     private Long price;
+    private Double rate;
     private List<UploadFileResponse> images;
     private List<ProductOptionResponse> options;
     private List<OptionTypeResponse> optionTypes;
     private CategoryResponse category;
 
-    public ProductResponse(Long id, String name, String slug, String description, Long price, String images, Long categoryId, String categoryName, String options) {
+    public ProductResponse(Long id, String name, String slug, String description, Long price, Double rate, String images, Long categoryId, String categoryName, String options) {
         this.id = id;
         this.name = name;
         this.slug = slug;
         this.description = description;
         this.price = price;
+        if (rate == null) {
+            this.rate = 0D;
+        } else {
+            this.rate = (double) Math.round(rate * 10) / 10;
+        }
         if (StringUtils.isNotBlank(images)) {
             this.images = Arrays.stream(images.split(",")).map(UploadFileResponse::of).collect(Collectors.toList());
         }

@@ -25,6 +25,7 @@ import static com.bakery.server.utils.Constant.RESULT_SET_MAPPING.PRODUCT_RESPON
                         @ColumnResult(name = "slug", type = String.class),
                         @ColumnResult(name = "description", type = String.class),
                         @ColumnResult(name = "price", type = Long.class),
+                        @ColumnResult(name = "rate", type = Double.class),
                         @ColumnResult(name = "images", type = String.class),
                         @ColumnResult(name = "categoryId", type = Long.class),
                         @ColumnResult(name = "categoryName", type = String.class),
