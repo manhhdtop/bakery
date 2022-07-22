@@ -31,7 +31,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/bakery?characterEncoding=utf-8&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/bakery?createDatabaseIfNotExist=true&characterEncoding=utf-8&serverTimezone=UTC
     username: root
     password: root
     platform: mysql
@@ -41,11 +41,6 @@ spring:
     show-sql: false
     hibernate.ddl-auto: update
     properties.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          secret: MdjXPJbHCSQUhDhVENhHmBbZh
   servlet:
     multipart:
       max-file-size: 5MB
