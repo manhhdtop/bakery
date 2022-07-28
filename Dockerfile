@@ -21,6 +21,6 @@ ENV LOG_PATH=${LOGPATH}
 
 RUN chmod a+x ${APP_DIR}/*
 
-EXPOSE 6005
+EXPOSE 8080
 
 ENTRYPOINT ["java","-Dlog_path=/home/ubuntu/logs/bakery/", "-Dspring.profiles.active=docker", "-jar", "bakery-0.0.1.jar"]
