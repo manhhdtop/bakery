@@ -6,7 +6,7 @@ MAINTAINER manhhd<hoangmanh1505@gmail.com>
 ARG APP_DIR=/home/workspace/bakery/
 ARG SRC_DIR=/target/bakery-0.0.1.jar
 ARG LOGPATH=/home/workspace/logs/bakery
-ARG JAR_FILE=bakery.jar
+ARG JAR_FILE=bakery-0.0.1.jar
 
 #Create direction Application folder
 RUN mkdir -p ${LOGPATH}
@@ -23,4 +23,4 @@ RUN chmod a+x ${APP_DIR}/*
 
 EXPOSE 6005
 
-ENTRYPOINT ["java","-Dlog_path=/home/ubuntu/logs/bakery/", "-jar", "bakery.jar"]
+ENTRYPOINT ["java","-Dlog_path=/home/ubuntu/logs/bakery/", "-jar", "bakery-0.0.1.jar"]
