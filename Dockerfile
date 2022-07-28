@@ -3,9 +3,9 @@ FROM openjdk:11 AS MAVEN_BUILD
 MAINTAINER manhhd<hoangmanh1505@gmail.com>
 
 #Define parameter
-ARG APP_DIR=/home/ubuntu/workspace/bakery
+ARG APP_DIR=/home/workspace/bakery
 ARG SRC_DIR=/target/bakery-0.0.1.jar
-ARG LOGPATH=/home/ubuntu/logs/bakery
+ARG LOGPATH=/home/workspace/logs/bakery
 ARG JAR_FILE=bakery.jar
 
 #Create direction Application folder
