@@ -23,4 +23,4 @@ RUN chmod a+x ${APP_DIR}/*
 
 EXPOSE 6005
 
-ENTRYPOINT ["java","-Dlog_path=/home/ubuntu/logs/bakery/", "-jar", "bakery-0.0.1.jar"]
+ENTRYPOINT ["java","-Dlog_path=/home/ubuntu/logs/bakery/", "-Dspring.profiles.active=docker", "-jar", "bakery-0.0.1.jar"]
