@@ -1,0 +1,17 @@
+version: '3.9'
+networks:
+  default:
+    name: bakery-net
+    external: true
+services:
+  bakery:
+    image: bakery
+    container_name: bakery
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bakery
