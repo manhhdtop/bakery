@@ -4,7 +4,8 @@ MAINTAINER manhhd<hoangmanh1505@gmail.com>
 
 #Define parameter
 ARG APP_DIR=/home/workspace/bakery/
-ARG SRC_DIR=/var/lib/jenkins/workspace/bakery/target/bakery-0.0.1.jar
+ARG SRC_DIR=/var/lib/jenkins/workspace/bakery/
+ARG SRC_JAR=target/bakery-0.0.1.jar
 ARG LOGPATH=/home/workspace/logs/bakery
 ARG JAR_FILE=bakery.jar
 
@@ -12,7 +13,8 @@ ARG JAR_FILE=bakery.jar
 RUN mkdir -p ${LOGPATH}
 
 #Copy source to deploy direction
-COPY ${SRC_DIR} ${APP_DIR}${JAR_FILE}
+WORKDIR ${SRC_DIR}
+COPY ${SRC_JAR} ${APP_DIR}${JAR_FILE}
 
 WORKDIR ${APP_DIR}
 
