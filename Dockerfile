@@ -23,4 +23,4 @@ RUN chmod a+x ${APP_DIR}*
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-Dlog_path=/home/ubuntu/logs/bakery/", "-jar", "bakery.jar"]
+ENTRYPOINT ["java", "-Dlog_path=/home/ubuntu/logs/bakery/", "-Dspring.profiles.active=docker", "-jar", "bakery.jar"]

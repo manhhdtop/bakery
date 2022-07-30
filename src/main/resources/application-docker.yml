@@ -31,9 +31,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.1.4:3306/bakery?createDatabaseIfNotExist=true&characterEncoding=utf-8&serverTimezone=UTC
+    url: jdbc:mysql://140.238.197.160:3306/bakery?createDatabaseIfNotExist=true&characterEncoding=utf-8&serverTimezone=UTC
     username: root
-    password: root
+    password: 123456a@
     platform: mysql
     tomcat:
       jmx-enabled: true
